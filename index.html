@@ -8,9 +8,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 
 <!-- ============================================================
-     資料庫區：這裡放的是「排程資料」的 XML 來源。
-     之後只要改這一區塊裡的 <shift>/<task> 內容，
-     下方畫面就會自動重新畫出對應的時間軸，不用改任何 JS。
+     資料庫區（種子資料）：
+     這裡的 XML 只在 Firestore 的 "shifts" collection「完全是空的」時，
+     會被讀出來當作第一次啟用時寫入雲端的初始資料；
+     之後畫面顯示與新增/編輯/刪除，都是直接跟下面的 Firebase Firestore 同步，
+     不再依賴這段 XML（多台裝置、多個瀏覽器分頁打開會即時同步）。
 
      結構說明：
        <schedule>
@@ -236,17 +238,21 @@
 
   <header class="title-block">
     <h1>線上專案進度時間軸表</h1>
-    <div id="today-label" class="subtitle"></div>
+    <div style="text-align:right;">
+      <div id="today-label" class="subtitle"></div>
+      <div id="syncStatus" class="subtitle">🔄 連線 Firebase 中...</div>
+    </div>
   </header>
   <p class="hint">
     橫軸：當日 00:00 → 當日 23:59 → 翌日 00:00 → 翌日 23:59，每 10 分鐘一格。
     左側「班別／項目」欄與上方「時間軸」列皆為凍結窗格，上下左右滾動時都會保持可見。
     點選色塊（或左側項目名稱）可在下方查看該時段的詳細說明，並可直接新增、編輯、刪除。
+    所有異動會即時同步到 Firebase，用不同裝置或分頁打開這個檔案也會看到一致的最新資料。
   </p>
 
   <div class="toolbar">
     <button type="button" class="btn primary" id="btnAddTask">＋ 新增項目</button>
-    <button type="button" class="btn" id="btnExport">匯出目前資料（XML）</button>
+    <button type="button" class="btn" id="btnExport">匯出備份（XML）</button>
   </div>
 
   <div class="grid-scroll" id="gridScroll">
@@ -322,10 +328,10 @@
 <!-- 匯出 XML 彈窗 -->
 <div class="modal-overlay hidden" id="exportModal">
   <div class="modal-card" style="max-width:600px;">
-    <h2>匯出目前資料（XML）</h2>
+    <h2>匯出備份（XML）</h2>
     <p style="font-size:12px;color:var(--ink-soft);margin-top:-8px;">
-      複製以下內容，貼回檔案最上方 &lt;script type="application/xml" id="scheduleData"&gt; 區塊裡，
-      即可永久保存這次的新增／修改／刪除（否則重新整理頁面，畫面會恢復成檔案原本存的資料）。
+      目前所有新增／編輯／刪除都會即時同步到 Firebase，不需要手動保存。
+      這裡純粹是備份用途：把下面的內容複製起來另存一份，之後若要重建資料可以參考。
     </p>
     <textarea id="exportArea" readonly></textarea>
     <div class="modal-actions">
@@ -338,7 +344,33 @@
   </div>
 </div>
 
-<script>
+<script type="module">
+/* ================================================================
+   Firebase 連線設定
+   ------------------------------------------------------------
+   這裡的 apiKey 是「Firebase 網頁用戶端設定」，本來就是設計成可以
+   放在前端程式碼裡公開的（跟後端的密鑰不同），真正的安全防線是
+   Firestore 的「安全性規則」。目前先用最開放的規則測試，
+   之後要正式上線建議加上帳號登入或限制規則，避免任何人都能改資料。
+   ================================================================ */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import {
+  getFirestore, collection, doc, getDocs, setDoc, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC6GwvYPWC4409mmgyb25wpVvk7NXzjjIk",
+  authDomain: "project-timeline-d2188.firebaseapp.com",
+  projectId: "project-timeline-d2188",
+  storageBucket: "project-timeline-d2188.firebasestorage.app",
+  messagingSenderId: "625882856609",
+  appId: "1:625882856609:web:0d704a5c5f669bee7b84e0"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
+const shiftsCol = collection(db, "shifts");
+
 /* ================================================================
    網域模型（Domain Model）
    ------------------------------------------------------------
@@ -430,6 +462,41 @@ function pickColorForNewShift() {
   const used = new Set(shifts.map(s => s.colorKey));
   const free = COLOR_PALETTE.find(c => !used.has(c));
   return free || COLOR_PALETTE[shifts.length % COLOR_PALETTE.length];
+}
+
+/* ================================================================
+   Firestore ⟷ 領域模型 轉換
+   ------------------------------------------------------------
+   Firestore 裡一個班別 = shifts collection 裡的一份文件，
+   文件 id 就是我們自己的 shift.id，欄位是 name / colorKey / tasks（陣列）。
+   ================================================================ */
+
+function shiftToFirestoreData(shift) {
+  return {
+    name: shift.name,
+    colorKey: shift.colorKey,
+    tasks: shift.tasks.map(t => ({
+      id: t.id, code: t.code, name: t.name,
+      startMin: t.startMin, endMin: t.endMin, desc: t.desc
+    }))
+  };
+}
+
+function firestoreDocToShift(id, data) {
+  const tasks = (data.tasks || []).map(t =>
+    new ScheduleTask(t.id || nextId("t"), t.code || "", t.name || "", t.startMin || 0, t.endMin || 0, t.desc || "")
+  );
+  return new Shift(id, data.name || "", data.colorKey || "amber", tasks);
+}
+
+// 把單一班別的最新狀態寫回 Firestore（新增/編輯/刪除項目後都會呼叫這個）
+async function saveShiftDoc(shift) {
+  try {
+    await setDoc(doc(db, "shifts", shift.id), shiftToFirestoreData(shift));
+  } catch (err) {
+    console.error(err);
+    alert("儲存到 Firebase 失敗，請檢查網路連線或 Firestore 安全性規則。\n" + err.message);
+  }
 }
 
 /* ================================================================
@@ -662,10 +729,11 @@ function handleFormSubmit(e) {
   const form = document.getElementById("taskForm");
   const editingTaskId = form.dataset.editingTaskId;
   const editingShiftId = form.dataset.editingShiftId;
+  let oldShift = null;
 
   if (editingTaskId) {
     // 從原本班別移除舊的項目（若編輯時把班別換掉了，也能正確搬移）
-    const oldShift = shifts.find(s => s.id === editingShiftId);
+    oldShift = shifts.find(s => s.id === editingShiftId);
     if (oldShift) oldShift.tasks = oldShift.tasks.filter(t => t.id !== editingTaskId);
     shift.tasks.push(new ScheduleTask(editingTaskId, code, name, startMin, endMin, desc));
   } else {
@@ -675,15 +743,20 @@ function handleFormSubmit(e) {
   closeTaskModal();
   resetDetailPanel();
   rerenderAll();
+
+  // 寫回 Firebase：異動到的班別（如果項目搬到別的班別，兩份文件都要更新）
+  saveShiftDoc(shift);
+  if (oldShift && oldShift.id !== shift.id) saveShiftDoc(oldShift);
 }
 
 function deleteTask(shiftId, taskId) {
-  if (!confirm("確定要刪除這個項目嗎？（如需保留，請先按「匯出目前資料」備份）")) return;
+  if (!confirm("確定要刪除這個項目嗎？")) return;
   const shift = shifts.find(s => s.id === shiftId);
   if (shift) shift.tasks = shift.tasks.filter(t => t.id !== taskId);
   closeTaskModal();
   resetDetailPanel();
   rerenderAll();
+  if (shift) saveShiftDoc(shift);
 }
 
 /* ================================================================
@@ -774,16 +847,36 @@ function setupEvents() {
 }
 
 /* ================================================================
-   啟動：讀取內嵌 XML → 解析成模型 → 畫圖
+   啟動：確認 Firestore 有資料（沒有就用內嵌 XML 種子寫入一次）→ 即時監聽 → 畫圖
    ================================================================ */
-(function init() {
-  const xmlText = document.getElementById("scheduleData").textContent;
-  shifts = parseSchedule(xmlText);
-
+(async function init() {
   renderRuler();
-  renderLanes();
-  renderLegend();
   setupEvents();
+
+  try {
+    const snap = await getDocs(shiftsCol);
+    if (snap.empty) {
+      // Firestore 是空的（第一次啟用）：把內嵌 XML 的範例資料寫進去當起始資料
+      const xmlText = document.getElementById("scheduleData").textContent;
+      const seedShifts = parseSchedule(xmlText);
+      await Promise.all(seedShifts.map(s => setDoc(doc(db, "shifts", s.id), shiftToFirestoreData(s))));
+    }
+  } catch (err) {
+    console.error(err);
+    document.getElementById("syncStatus").textContent = "⚠️ 無法連線 Firebase，請檢查網路或 Firestore 安全性規則";
+    return;
+  }
+
+  // 即時監聽：只要 Firestore 的 shifts collection 有變動（不論是這一頁自己改的，
+  // 還是別人在別的裝置/分頁改的），這裡都會收到通知並自動重畫畫面
+  onSnapshot(shiftsCol, snapshot => {
+    shifts = snapshot.docs.map(d => firestoreDocToShift(d.id, d.data()));
+    rerenderAll();
+    document.getElementById("syncStatus").textContent = "✅ 已與 Firebase 同步";
+  }, err => {
+    console.error(err);
+    document.getElementById("syncStatus").textContent = "⚠️ 與 Firebase 同步中斷：" + err.message;
+  });
 })();
 </script>
 </body>
