@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>線上專案進度時間軸表</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- ============================================================
+     資料庫區：這裡放的是「排程資料」的 XML 來源。
+     之後只要改這一區塊裡的 <shift>/<task> 內容，
+     下方畫面就會自動重新畫出對應的時間軸，不用改任何 JS。
+
+     結構說明：
+       <schedule>
+         <shift name="班別名稱" color="amber|teal|indigo|rose|moss">
+           <task name="項目名稱" start="HH:MM" startDay="0" end="HH:MM" endDay="0|1">
+             <desc>時間內說明文字</desc>
+           </task>
+         </shift>
+       </schedule>
+
+       startDay / endDay：0 = 當日，1 = 翌日
+       （現在整條軸線是「當日00:00～翌日23:59」連續 48 小時，
+        所以跨夜項目只要 endDay="1" 即可，不需要再做任何切段處理）
+     ============================================================ -->
+<script type="application/xml" id="scheduleData">
+<schedule>
+  <shift name="白班" color="amber">
+    <task name="晨間交班" start="08:00" startDay="0" end="08:30" endDay="0">
+      <desc>接大夜班交班內容，核對個案人數與夜間異常紀錄。</desc>
+    </task>
+    <task name="晨間照護與服藥" start="08:30" startDay="0" end="11:30" endDay="0">
+      <desc>協助盥洗、量測生命徵象，並依medication表核對服藥。</desc>
+    </task>
+    <task name="午間用餐協助" start="11:30" startDay="0" end="13:00" endDay="0">
+      <desc>協助用餐或鼻胃管灌食，注意嗆咳風險並記錄攝取量。</desc>
+    </task>
+  </shift>
+
+  <shift name="小夜班" color="teal">
+    <task name="下午活動帶領" start="14:00" startDay="0" end="16:00" endDay="0">
+      <desc>帶領團體活動或復健操，觀察個案參與狀況並記錄。</desc>
+    </task>
+    <task name="晚間用餐與服藥" start="17:00" startDay="0" end="18:30" endDay="0">
+      <desc>協助晚餐與晚間用藥，留意糖尿病個案的血糖監測。</desc>
+    </task>
+    <task name="晚間交班準備" start="22:00" startDay="0" end="23:00" endDay="0">
+      <desc>整理當日紀錄，準備交班給大夜班，清點耗材庫存。</desc>
+    </task>
+  </shift>
+
+  <shift name="大夜班" color="indigo">
+    <task name="夜間巡房" start="23:00" startDay="0" end="06:00" endDay="1">
+      <desc>跨夜作業，每兩小時巡視翻身、監測生命徵象並記錄。</desc>
+    </task>
+    <task name="晨間交班整理" start="06:00" startDay="1" end="08:00" endDay="1">
+      <desc>彙整夜間異常事項，準備與白班交接。</desc>
+    </task>
+  </shift>
+
+  <shift name="洗澡班" color="rose">
+    <task name="上午沐浴協助" start="09:00" startDay="0" end="11:00" endDay="0">
+      <desc>依排定順序協助個案沐浴，注意水溫與防滑，紀錄皮膚狀況。</desc>
+    </task>
+    <task name="下午沐浴協助" start="15:00" startDay="0" end="16:30" endDay="0">
+      <desc>接續上午未完成個案，完成後回填沐浴紀錄表。</desc>
+    </task>
+  </shift>
+
+  <shift name="教學班" color="moss">
+    <task name="新進人員教育訓練" start="10:00" startDay="0" end="11:30" endDay="0">
+      <desc>教授基本照護技巧與緊急應變流程，並進行操作示範。</desc>
+    </task>
+    <task name="個案照護計畫討論" start="15:30" startDay="0" end="16:30" endDay="0">
+      <desc>與各班別討論個案照護計畫調整，更新照護紀錄。</desc>
+    </task>
+  </shift>
+</schedule>
+</script>
+
+<style>
+  :root{
+    --paper:#FAF7F0;
+    --paper-alt:#F1ECE0;
+    --ink:#2B2620;
+    --ink-soft:#6b6355;
+    --line:#DAD3C2;
+    --line-strong:#B9AF97;
+    --amber:#C08A2E;   --amber-bg:#F3E4C6;
+    --teal:#2F6E63;    --teal-bg:#DCEAE6;
+    --indigo:#3C4A78;  --indigo-bg:#DFE2EE;
+    --rose:#B0525C;    --rose-bg:#F0D9DB;
+    --moss:#5C7A3D;    --moss-bg:#E2E9D4;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);
+    font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;}
+
+  .page{max-width:1280px;margin:0 auto;padding:40px 28px 80px;}
+
+  header.title-block{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:10px;
+    display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;}
+  header.title-block h1{font-family:"Noto Serif TC",serif;font-weight:700;font-size:28px;
+    letter-spacing:2px;margin:0;}
+  header.title-block .subtitle{font-size:13px;color:var(--ink-soft);}
+  p.hint{font-size:13px;color:var(--ink-soft);margin:0 0 14px;}
+
+  .toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+  .btn{font-family:inherit;font-size:13px;padding:7px 14px;border-radius:3px;
+    border:1px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;}
+  .btn:hover{background:var(--ink);color:#fff;}
+  .btn.primary{background:var(--ink);color:#fff;}
+  .btn.primary:hover{opacity:.85;}
+  .btn.danger{border-color:#b23b3b;color:#b23b3b;}
+  .btn.danger:hover{background:#b23b3b;color:#fff;}
+  .btn.small{padding:3px 10px;font-size:11px;}
+  .btn.hidden{display:none;}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(30,26,20,.45);display:flex;
+    align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .modal-overlay.hidden{display:none;}
+  .modal-card{background:#fff;border-radius:4px;max-width:480px;width:100%;padding:24px;
+    max-height:90vh;overflow:auto;}
+  .modal-card h2{font-family:"Noto Serif TC",serif;font-size:18px;margin:0 0 16px;}
+  .field{margin-bottom:14px;display:flex;flex-direction:column;gap:5px;}
+  .field label{font-size:12px;color:var(--ink-soft);}
+  .field input, .field select, .field textarea{font-family:inherit;font-size:13px;
+    padding:7px 9px;border:1px solid var(--line);border-radius:3px;background:var(--paper);
+    color:var(--ink);width:100%;}
+  .field textarea{resize:vertical;min-height:60px;}
+  .field-row{display:flex;gap:10px;}
+  .field-row .field{flex:1;}
+  .modal-actions{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:10px;}
+  .modal-actions .right{display:flex;gap:8px;}
+  #exportArea{width:100%;min-height:220px;font-family:monospace;font-size:12px;
+    border:1px solid var(--line);padding:10px;border-radius:3px;}
+
+  /* ---------- 凍結窗格容器 ---------- */
+  /* grid-scroll 同時可上下、左右滾動；標籤欄與刻度尺列各自用 sticky 固定 */
+  .grid-scroll{border:1px solid var(--line);border-radius:2px;background:#fff;
+    max-height:640px;overflow:auto;position:relative;}
+
+  .row{display:flex;width:max-content;}
+
+  .label-cell{width:190px;flex:none;position:sticky;left:0;background:#fff;
+    border-right:1px solid var(--line);z-index:5;}
+  .track-cell{flex:none;position:relative;}
+
+  /* 刻度尺列：整列 sticky 在頂端 */
+  .ruler-row{position:sticky;top:0;z-index:20;background:var(--paper-alt);
+    border-bottom:2px solid var(--ink);}
+  .ruler-row .label-cell{background:var(--paper-alt);z-index:30;
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:700;color:var(--ink-soft);border-right:1px solid var(--line);}
+  .ruler-row .track-cell{height:52px;}
+
+  .tick{position:absolute;top:0;bottom:0;border-left:1px solid var(--line);}
+  .tick.hour{border-left:1px solid var(--line-strong);}
+  .tick.day-start{border-left:2px solid var(--ink);}
+  .tick .tt{position:absolute;top:4px;left:4px;font-size:11px;font-weight:700;
+    color:var(--ink);white-space:nowrap;}
+  .tick .td{position:absolute;top:19px;left:4px;font-size:10px;color:var(--ink-soft);
+    white-space:nowrap;}
+  .tick .tm{position:absolute;top:34px;left:3px;font-size:9px;color:#B7AE9A;white-space:nowrap;}
+
+  /* ---------- 班別／項目列 ---------- */
+  .lane-label{padding:14px 14px;display:flex;flex-direction:column;gap:4px;}
+  .lane-label .lane-head{display:flex;align-items:center;justify-content:space-between;}
+  .lane-label .shift-name{font-weight:700;font-size:14px;}
+  .lane-label .shift-name::before{content:"";display:inline-block;width:9px;height:9px;
+    border-radius:50%;margin-right:7px;vertical-align:middle;}
+  .lane-label.amber .shift-name::before{background:var(--amber);}
+  .lane-label.teal .shift-name::before{background:var(--teal);}
+  .lane-label.indigo .shift-name::before{background:var(--indigo);}
+  .lane-label.rose .shift-name::before{background:var(--rose);}
+  .lane-label.moss .shift-name::before{background:var(--moss);}
+  .lane-label .add-task-btn{border:none;background:none;color:var(--ink-soft);cursor:pointer;
+    font-size:15px;line-height:1;padding:0 4px;}
+  .lane-label .add-task-btn:hover{color:var(--ink);}
+  .lane-label .task-name{font-size:12px;color:var(--ink-soft);padding-left:16px;cursor:pointer;
+    border-radius:2px;}
+  .lane-label .task-name:hover{color:var(--ink);background:var(--paper-alt);}
+
+  .lane .track-cell{min-height:56px;border-bottom:1px solid var(--line);}
+
+  .bar{position:absolute;top:10px;bottom:10px;border-radius:3px;cursor:pointer;
+    font-size:12px;display:flex;align-items:center;padding:0 10px;
+    overflow:hidden;white-space:nowrap;border:1px solid rgba(0,0,0,.12);
+    transition:filter .15s ease, box-shadow .15s ease;}
+  .bar:hover{filter:brightness(0.95);box-shadow:0 0 0 2px rgba(0,0,0,.18) inset;}
+  .bar.selected{box-shadow:0 0 0 2px var(--ink) inset;}
+  .bar.amber{background:var(--amber-bg);color:#5c3f14;}
+  .bar.teal{background:var(--teal-bg);color:#173e37;}
+  .bar.indigo{background:var(--indigo-bg);color:#1f2846;}
+  .bar.rose{background:var(--rose-bg);color:#5c2229;}
+  .bar.moss{background:var(--moss-bg);color:#2e3f1a;}
+
+  .now-line{position:absolute;top:0;bottom:0;width:0;border-left:2px dashed #b23b3b;z-index:6;}
+  .now-line .now-tag{position:absolute;top:2px;left:4px;font-size:10px;color:#b23b3b;
+    white-space:nowrap;background:rgba(255,255,255,.85);padding:0 2px;}
+
+  /* ---------- 說明面板 / 圖例 ---------- */
+  footer.legend{margin-top:16px;font-size:12px;color:var(--ink-soft);display:flex;gap:18px;flex-wrap:wrap;}
+  footer.legend span{display:inline-flex;align-items:center;gap:6px;}
+  footer.legend i{width:9px;height:9px;border-radius:50%;display:inline-block;}
+  footer.legend i.amber{background:var(--amber);}
+  footer.legend i.teal{background:var(--teal);}
+  footer.legend i.indigo{background:var(--indigo);}
+  footer.legend i.rose{background:var(--rose);}
+  footer.legend i.moss{background:var(--moss);}
+
+  .detail-panel{margin-top:14px;border:1px solid var(--line);background:#fff;border-radius:2px;
+    padding:18px 20px;min-height:64px;}
+  .detail-panel .ph{color:var(--ink-soft);font-size:13px;}
+  .detail-panel .d-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;}
+  .detail-panel .d-head .d-shift{font-size:12px;padding:2px 8px;border-radius:10px;font-weight:700;}
+  .detail-panel .d-head .d-shift.amber{background:var(--amber-bg);color:#5c3f14;}
+  .detail-panel .d-head .d-shift.teal{background:var(--teal-bg);color:#173e37;}
+  .detail-panel .d-head .d-shift.indigo{background:var(--indigo-bg);color:#1f2846;}
+  .detail-panel .d-head .d-shift.rose{background:var(--rose-bg);color:#5c2229;}
+  .detail-panel .d-head .d-shift.moss{background:var(--moss-bg);color:#2e3f1a;}
+  .detail-panel .d-head .d-name{font-weight:700;font-size:15px;}
+  .detail-panel .d-time{font-size:12px;color:var(--ink-soft);margin-bottom:8px;}
+  .detail-panel .d-desc{font-size:13px;line-height:1.7;}
+  .detail-panel .d-actions{margin-top:12px;display:flex;gap:8px;}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="title-block">
+    <h1>線上專案進度時間軸表</h1>
+    <div id="today-label" class="subtitle"></div>
+  </header>
+  <p class="hint">
+    橫軸：當日 00:00 → 當日 23:59 → 翌日 00:00 → 翌日 23:59，每 10 分鐘一格。
+    左側「班別／項目」欄與上方「時間軸」列皆為凍結窗格，上下左右滾動時都會保持可見。
+    點選色塊（或左側項目名稱）可在下方查看該時段的詳細說明，並可直接新增、編輯、刪除。
+  </p>
+
+  <div class="toolbar">
+    <button type="button" class="btn primary" id="btnAddTask">＋ 新增項目</button>
+    <button type="button" class="btn" id="btnExport">匯出目前資料（XML）</button>
+  </div>
+
+  <div class="grid-scroll" id="gridScroll">
+    <div class="row ruler-row" id="rulerRow">
+      <div class="label-cell">班別 / 項目</div>
+      <div class="track-cell" id="rulerTrack"></div>
+    </div>
+    <div id="lanes"></div>
+  </div>
+
+  <footer class="legend" id="legend"></footer>
+
+  <div class="detail-panel" id="detailPanel">
+    <div class="ph">點選時間軸中的色塊，即可在此處顯示該項目的時間內說明。</div>
+  </div>
+
+</div>
+
+<!-- 新增／編輯項目 彈窗 -->
+<div class="modal-overlay hidden" id="taskModal">
+  <div class="modal-card">
+    <h2 id="taskModalTitle">新增項目</h2>
+    <form id="taskForm">
+      <div class="field">
+        <label>班別</label>
+        <select id="fShift"></select>
+      </div>
+      <div class="field" id="fNewShiftWrap" style="display:none;">
+        <label>新班別名稱</label>
+        <input type="text" id="fNewShiftName" placeholder="例如：教學班">
+      </div>
+      <div class="field">
+        <label>項目名稱</label>
+        <input type="text" id="fName" required>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>開始</label>
+          <div style="display:flex;gap:6px;">
+            <select id="fStartDay"><option value="0">當日</option><option value="1">翌日</option></select>
+            <input type="time" id="fStartTime" step="600" required>
+          </div>
+        </div>
+        <div class="field">
+          <label>結束</label>
+          <div style="display:flex;gap:6px;">
+            <select id="fEndDay"><option value="0">當日</option><option value="1">翌日</option></select>
+            <input type="time" id="fEndTime" step="600" required>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label>時間內說明</label>
+        <textarea id="fDesc"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn danger hidden" id="btnDeleteInForm">刪除此項目</button>
+        <div class="right">
+          <button type="button" class="btn" id="btnCancelForm">取消</button>
+          <button type="submit" class="btn primary">儲存</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 匯出 XML 彈窗 -->
+<div class="modal-overlay hidden" id="exportModal">
+  <div class="modal-card" style="max-width:600px;">
+    <h2>匯出目前資料（XML）</h2>
+    <p style="font-size:12px;color:var(--ink-soft);margin-top:-8px;">
+      複製以下內容，貼回檔案最上方 &lt;script type="application/xml" id="scheduleData"&gt; 區塊裡，
+      即可永久保存這次的新增／修改／刪除（否則重新整理頁面，畫面會恢復成檔案原本存的資料）。
+    </p>
+    <textarea id="exportArea" readonly></textarea>
+    <div class="modal-actions">
+      <div></div>
+      <div class="right">
+        <button type="button" class="btn" id="btnCloseExport">關閉</button>
+        <button type="button" class="btn primary" id="btnCopyExport">複製</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   網域模型（Domain Model）
+   ------------------------------------------------------------
+   Shift  ：一個班別，包含名稱、色系、以及若干個 Task
+   Task   ：一個項目，包含名稱、起訖的「絕對分鐘數」與說明文字
+            絕對分鐘數 = day * 1440 + 時*60 + 分
+            軸線總長是「當日 00:00 ～ 翌日 23:59」= 2880 分鐘，
+            跨夜項目只是 endMin 落在 1440~2879 之間，
+            直接畫在同一條連續軸上即可，不需要再切段。
+   ================================================================ */
+
+const DAY_MIN = 1440;          // 一天 = 1440 分鐘
+const TOTAL_MIN = DAY_MIN * 2; // 軸線總長：當日 + 翌日 = 2880 分鐘
+const PX_PER_MIN = 2;          // 每分鐘在畫面上佔多少 px（10分鐘 = 20px 一格）
+const TOTAL_PX = TOTAL_MIN * PX_PER_MIN;
+const COLOR_PALETTE = ["amber", "teal", "indigo", "rose", "moss"]; // 新增班別時依序自動配色
+
+let idCounter = 0;
+function nextId(prefix) { return `${prefix}_${++idCounter}_${Date.now().toString(36)}`; }
+
+class ScheduleTask {
+  constructor(id, name, startMin, endMin, desc) {
+    this.id = id;
+    this.name = name;
+    this.startMin = startMin; // 0 ~ 2879
+    this.endMin = endMin;     // 0 ~ 2880
+    this.desc = desc;
+  }
+}
+
+class Shift {
+  constructor(id, name, colorKey, tasks) {
+    this.id = id;
+    this.name = name;
+    this.colorKey = colorKey; // amber | teal | indigo | rose | moss
+    this.tasks = tasks;
+  }
+}
+
+// shifts：目前畫面上的「唯一真相來源」，新增/編輯/刪除都是在改這個陣列，
+// 改完呼叫 rerenderAll() 重新畫圖即可，畫面永遠跟這份資料同步。
+let shifts = [];
+
+// 把 "HH:MM" + 天數 轉成絕對分鐘數
+function toAbsoluteMinutes(hhmm, day) {
+  const [h, m] = hhmm.split(":").map(Number);
+  return day * DAY_MIN + h * 60 + m;
+}
+
+// 絕對分鐘數 → "HH:MM"（只取當天內的時分）
+function minToHHMM(minWithinDay) {
+  const h = String(Math.floor(minWithinDay / 60)).padStart(2, "0");
+  const mm = String(minWithinDay % 60).padStart(2, "0");
+  return `${h}:${mm}`;
+}
+
+function minutesToLabel(min) {
+  const dayIndex = Math.floor(min / DAY_MIN);
+  return `${dayIndex === 0 ? "當日" : "翌日"} ${minToHHMM(min % DAY_MIN)}`;
+}
+
+// 解析內嵌（或使用者貼回）的 XML 排程資料，回傳 Shift[] 陣列
+function parseSchedule(xmlText) {
+  const doc = new DOMParser().parseFromString(xmlText, "application/xml");
+  const shiftNodes = Array.from(doc.getElementsByTagName("shift"));
+
+  return shiftNodes.map(shiftNode => {
+    const name = shiftNode.getAttribute("name");
+    const colorKey = shiftNode.getAttribute("color") || "amber";
+
+    const taskNodes = Array.from(shiftNode.getElementsByTagName("task"));
+    const tasks = taskNodes.map(taskNode => {
+      const tName = taskNode.getAttribute("name");
+      const sMin = toAbsoluteMinutes(taskNode.getAttribute("start"), Number(taskNode.getAttribute("startDay") || 0));
+      const eMin = toAbsoluteMinutes(taskNode.getAttribute("end"), Number(taskNode.getAttribute("endDay") || 0));
+      const descNode = taskNode.getElementsByTagName("desc")[0];
+      const desc = descNode ? descNode.textContent.trim() : "";
+      return new ScheduleTask(nextId("t"), tName, sMin, eMin, desc);
+    });
+
+    return new Shift(nextId("s"), name, colorKey, tasks);
+  });
+}
+
+// 幫新班別自動挑一個目前還沒被用掉的顏色
+function pickColorForNewShift() {
+  const used = new Set(shifts.map(s => s.colorKey));
+  const free = COLOR_PALETTE.find(c => !used.has(c));
+  return free || COLOR_PALETTE[shifts.length % COLOR_PALETTE.length];
+}
+
+/* ================================================================
+   畫面渲染
+   ================================================================ */
+
+function px(min) { return min * PX_PER_MIN; }
+
+// 畫刻度尺：每 10 分鐘一條細線，每小時一條粗線並標數字，
+// 每天開頭（00:00）用最粗的線區分「當日／翌日」
+function renderRuler() {
+  const track = document.getElementById("rulerTrack");
+  track.style.width = TOTAL_PX + "px";
+  track.style.height = "52px";
+  track.innerHTML = "";
+
+  for (let min = 0; min <= TOTAL_MIN; min += 10) {
+    const isDayStart = min % DAY_MIN === 0;
+    const isHour = min % 60 === 0;
+
+    const tick = document.createElement("div");
+    tick.className = "tick" + (isHour ? " hour" : "") + (isDayStart ? " day-start" : "");
+    tick.style.left = px(min) + "px";
+
+    if (isHour) {
+      const dayIndex = Math.floor(min / DAY_MIN);     // 0=當日 1=翌日
+      const dayLabel = dayIndex === 0 ? "當日" : "翌日";
+      const hh = String(Math.floor((min % DAY_MIN) / 60)).padStart(2, "0");
+      const clock = min === TOTAL_MIN ? "23:59" : `${hh}:00`;
+      tick.innerHTML = `<div class="tt">${clock}</div><div class="td">${dayLabel}</div>`;
+    } else {
+      const mm = String(min % 60).padStart(2, "0");
+      tick.innerHTML = `<div class="tm">:${mm}</div>`;
+    }
+    track.appendChild(tick);
+  }
+}
+
+function renderLanes() {
+  const lanesEl = document.getElementById("lanes");
+  lanesEl.innerHTML = "";
+
+  shifts.forEach(shift => {
+    const row = document.createElement("div");
+    row.className = "row lane";
+
+    const label = document.createElement("div");
+    label.className = `label-cell lane-label ${shift.colorKey}`;
+    label.innerHTML = `
+      <div class="lane-head">
+        <span class="shift-name">${shift.name}</span>
+        <button type="button" class="add-task-btn" title="在「${shift.name}」新增項目" data-shift-id="${shift.id}">＋</button>
+      </div>
+      ${shift.tasks.map(t => `<div class="task-name" data-shift-id="${shift.id}" data-task-id="${t.id}">${t.name}</div>`).join("")}
+    `;
+    row.appendChild(label);
+
+    const track = document.createElement("div");
+    track.className = "track-cell";
+    track.style.width = TOTAL_PX + "px";
+
+    shift.tasks.forEach(task => {
+      const bar = document.createElement("div");
+      bar.className = `bar ${shift.colorKey}`;
+      bar.dataset.shiftId = shift.id;
+      bar.dataset.taskId = task.id;
+      bar.style.left = px(task.startMin) + "px";
+      bar.style.width = Math.max(px(task.endMin - task.startMin), 10) + "px";
+      bar.textContent = task.name;
+      bar.addEventListener("click", () => showDetail(shift.id, task.id));
+      track.appendChild(bar);
+    });
+
+    row.appendChild(track);
+    lanesEl.appendChild(row);
+  });
+
+  renderNowLine();
+}
+
+function showDetail(shiftId, taskId) {
+  const shift = shifts.find(s => s.id === shiftId);
+  const task = shift && shift.tasks.find(t => t.id === taskId);
+  if (!shift || !task) return;
+
+  document.querySelectorAll(".bar.selected").forEach(b => b.classList.remove("selected"));
+  const barEl = document.querySelector(`.bar[data-task-id="${taskId}"]`);
+  if (barEl) barEl.classList.add("selected");
+
+  const panel = document.getElementById("detailPanel");
+  panel.innerHTML = `
+    <div class="d-head">
+      <span class="d-shift ${shift.colorKey}">${shift.name}</span>
+      <span class="d-name">${task.name}</span>
+    </div>
+    <div class="d-time">${minutesToLabel(task.startMin)} －－ ${minutesToLabel(task.endMin)}</div>
+    <div class="d-desc">${task.desc || "（尚未填寫說明）"}</div>
+    <div class="d-actions">
+      <button type="button" class="btn small" id="btnEditDetail">編輯</button>
+      <button type="button" class="btn small danger" id="btnDeleteDetail">刪除</button>
+    </div>
+  `;
+  document.getElementById("btnEditDetail").onclick = () => openTaskForm("edit", shiftId, taskId);
+  document.getElementById("btnDeleteDetail").onclick = () => deleteTask(shiftId, taskId);
+}
+
+function resetDetailPanel() {
+  document.getElementById("detailPanel").innerHTML =
+    `<div class="ph">點選時間軸中的色塊，即可在此處顯示該項目的時間內說明。</div>`;
+}
+
+function renderLegend() {
+  const legend = document.getElementById("legend");
+  const seen = new Set();
+  legend.innerHTML = shifts
+    .filter(s => !seen.has(s.colorKey) && seen.add(s.colorKey))
+    .map(s => `<span><i class="${s.colorKey}"></i>${s.name}</span>`)
+    .join("");
+}
+
+// 在刻度尺與每一列的軌道上都畫一條「現在」虛線（同一 px 位置，視覺上連成一條線）
+function renderNowLine() {
+  document.querySelectorAll(".now-line").forEach(el => el.remove()); // 先清掉舊的，避免重畫時疊加
+
+  const now = new Date();
+  document.getElementById("today-label").textContent = now.toLocaleDateString("zh-Hant") + "（今天＝當日）";
+
+  const nowMin = now.getHours() * 60 + now.getMinutes(); // 落在「當日」範圍 0~1439
+  const left = px(nowMin) + "px";
+
+  document.querySelectorAll(".track-cell").forEach(track => {
+    const line = document.createElement("div");
+    line.className = "now-line";
+    line.style.left = left;
+    track.appendChild(line);
+  });
+
+  const rulerLine = document.querySelector("#rulerTrack .now-line");
+  if (rulerLine) rulerLine.innerHTML = `<div class="now-tag">現在 ${minToHHMM(nowMin)}</div>`;
+}
+
+function rerenderAll() {
+  renderLanes();
+  renderLegend();
+}
+
+/* ================================================================
+   新增／編輯／刪除 表單
+   ================================================================ */
+
+function populateShiftSelect(selectedShiftId) {
+  const sel = document.getElementById("fShift");
+  sel.innerHTML = shifts.map(s => `<option value="${s.id}">${s.name}</option>`).join("")
+    + `<option value="__new__">＋ 新增班別...</option>`;
+  sel.value = selectedShiftId || (shifts[0] && shifts[0].id) || "__new__";
+
+  const newWrap = document.getElementById("fNewShiftWrap");
+  newWrap.style.display = sel.value === "__new__" ? "flex" : "none";
+  sel.onchange = () => {
+    newWrap.style.display = sel.value === "__new__" ? "flex" : "none";
+  };
+}
+
+function openTaskForm(mode, shiftId, taskId) {
+  const form = document.getElementById("taskForm");
+  form.reset();
+  document.getElementById("fNewShiftName").value = "";
+  populateShiftSelect(shiftId);
+  document.getElementById("btnDeleteInForm").classList.toggle("hidden", mode !== "edit");
+
+  if (mode === "edit") {
+    const shift = shifts.find(s => s.id === shiftId);
+    const task = shift.tasks.find(t => t.id === taskId);
+    document.getElementById("taskModalTitle").textContent = "編輯項目";
+    document.getElementById("fName").value = task.name;
+    document.getElementById("fDesc").value = task.desc;
+    document.getElementById("fStartDay").value = String(Math.floor(task.startMin / DAY_MIN));
+    document.getElementById("fStartTime").value = minToHHMM(task.startMin % DAY_MIN);
+    document.getElementById("fEndDay").value = String(Math.floor(task.endMin / DAY_MIN));
+    document.getElementById("fEndTime").value = minToHHMM(task.endMin % DAY_MIN);
+    form.dataset.editingShiftId = shiftId;
+    form.dataset.editingTaskId = taskId;
+  } else {
+    document.getElementById("taskModalTitle").textContent = "新增項目";
+    delete form.dataset.editingShiftId;
+    delete form.dataset.editingTaskId;
+  }
+
+  document.getElementById("taskModal").classList.remove("hidden");
+}
+
+function closeTaskModal() {
+  document.getElementById("taskModal").classList.add("hidden");
+}
+
+function handleFormSubmit(e) {
+  e.preventDefault();
+
+  const shiftSelectVal = document.getElementById("fShift").value;
+  let shift;
+  if (shiftSelectVal === "__new__") {
+    const newName = document.getElementById("fNewShiftName").value.trim();
+    if (!newName) { alert("請輸入新班別名稱"); return; }
+    shift = shifts.find(s => s.name === newName);
+    if (!shift) {
+      shift = new Shift(nextId("s"), newName, pickColorForNewShift(), []);
+      shifts.push(shift);
+    }
+  } else {
+    shift = shifts.find(s => s.id === shiftSelectVal);
+  }
+
+  const name = document.getElementById("fName").value.trim();
+  const startDay = Number(document.getElementById("fStartDay").value);
+  const startTime = document.getElementById("fStartTime").value;
+  const endDay = Number(document.getElementById("fEndDay").value);
+  const endTime = document.getElementById("fEndTime").value;
+  const desc = document.getElementById("fDesc").value.trim();
+
+  if (!name || !startTime || !endTime) { alert("請完整填寫項目名稱與開始／結束時間"); return; }
+
+  const startMin = toAbsoluteMinutes(startTime, startDay);
+  const endMin = toAbsoluteMinutes(endTime, endDay);
+  if (endMin <= startMin) { alert("結束時間必須晚於開始時間"); return; }
+
+  const form = document.getElementById("taskForm");
+  const editingTaskId = form.dataset.editingTaskId;
+  const editingShiftId = form.dataset.editingShiftId;
+
+  if (editingTaskId) {
+    // 從原本班別移除舊的項目（若編輯時把班別換掉了，也能正確搬移）
+    const oldShift = shifts.find(s => s.id === editingShiftId);
+    if (oldShift) oldShift.tasks = oldShift.tasks.filter(t => t.id !== editingTaskId);
+    shift.tasks.push(new ScheduleTask(editingTaskId, name, startMin, endMin, desc));
+  } else {
+    shift.tasks.push(new ScheduleTask(nextId("t"), name, startMin, endMin, desc));
+  }
+
+  closeTaskModal();
+  resetDetailPanel();
+  rerenderAll();
+}
+
+function deleteTask(shiftId, taskId) {
+  if (!confirm("確定要刪除這個項目嗎？（如需保留，請先按「匯出目前資料」備份）")) return;
+  const shift = shifts.find(s => s.id === shiftId);
+  if (shift) shift.tasks = shift.tasks.filter(t => t.id !== taskId);
+  closeTaskModal();
+  resetDetailPanel();
+  rerenderAll();
+}
+
+/* ================================================================
+   匯出目前資料為 XML
+   ------------------------------------------------------------
+   因為這是一份單純的靜態網頁檔案，新增／編輯／刪除只會停留在
+   「這次瀏覽器分頁的記憶體裡」，重新整理頁面就會回到檔案原本存的樣子。
+   如果要把這次改動永久保存，就用這個功能把目前資料匯出成 XML，
+   貼回檔案最上方 <script id="scheduleData"> 區塊即可。
+   ================================================================ */
+
+function escapeXml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function buildExportXML() {
+  const lines = ["<schedule>"];
+  shifts.forEach(shift => {
+    lines.push(`  <shift name="${escapeXml(shift.name)}" color="${shift.colorKey}">`);
+    shift.tasks.forEach(task => {
+      const sDay = Math.floor(task.startMin / DAY_MIN);
+      const eDay = Math.floor(task.endMin / DAY_MIN);
+      lines.push(`    <task name="${escapeXml(task.name)}" start="${minToHHMM(task.startMin % DAY_MIN)}" startDay="${sDay}" end="${minToHHMM(task.endMin % DAY_MIN)}" endDay="${eDay}">`);
+      lines.push(`      <desc>${escapeXml(task.desc)}</desc>`);
+      lines.push(`    </task>`);
+    });
+    lines.push(`  </shift>`);
+  });
+  lines.push("</schedule>");
+  return lines.join("\n");
+}
+
+function openExportModal() {
+  document.getElementById("exportArea").value = buildExportXML();
+  document.getElementById("exportModal").classList.remove("hidden");
+}
+
+function closeExportModal() {
+  document.getElementById("exportModal").classList.add("hidden");
+}
+
+function copyExport() {
+  const ta = document.getElementById("exportArea");
+  ta.focus();
+  ta.select();
+  try {
+    navigator.clipboard.writeText(ta.value);
+  } catch (e) {
+    document.execCommand("copy");
+  }
+}
+
+/* ================================================================
+   事件綁定
+   ================================================================ */
+
+function setupEvents() {
+  // 用事件代理（event delegation）處理班別/項目欄的點擊，
+  // 這樣即使 #lanes 內容整個重畫，也不用每次重新綁定事件
+  document.getElementById("lanes").addEventListener("click", e => {
+    const addBtn = e.target.closest(".add-task-btn");
+    if (addBtn) { openTaskForm("add", addBtn.dataset.shiftId, null); return; }
+    const nameItem = e.target.closest(".task-name");
+    if (nameItem) { showDetail(nameItem.dataset.shiftId, nameItem.dataset.taskId); return; }
+  });
+
+  document.getElementById("btnAddTask").addEventListener("click", () => openTaskForm("add", null, null));
+  document.getElementById("taskForm").addEventListener("submit", handleFormSubmit);
+  document.getElementById("btnCancelForm").addEventListener("click", closeTaskModal);
+  document.getElementById("btnDeleteInForm").addEventListener("click", () => {
+    const form = document.getElementById("taskForm");
+    if (form.dataset.editingShiftId && form.dataset.editingTaskId) {
+      deleteTask(form.dataset.editingShiftId, form.dataset.editingTaskId);
+    }
+  });
+  document.getElementById("taskModal").addEventListener("click", e => {
+    if (e.target.id === "taskModal") closeTaskModal();
+  });
+
+  document.getElementById("btnExport").addEventListener("click", openExportModal);
+  document.getElementById("btnCloseExport").addEventListener("click", closeExportModal);
+  document.getElementById("btnCopyExport").addEventListener("click", copyExport);
+  document.getElementById("exportModal").addEventListener("click", e => {
+    if (e.target.id === "exportModal") closeExportModal();
+  });
+}
+
+/* ================================================================
+   啟動：讀取內嵌 XML → 解析成模型 → 畫圖
+   ================================================================ */
+(function init() {
+  const xmlText = document.getElementById("scheduleData").textContent;
+  shifts = parseSchedule(xmlText);
+
+  renderRuler();
+  renderLanes();
+  renderLegend();
+  setupEvents();
+})();
+</script>
+</body>
+</html>
