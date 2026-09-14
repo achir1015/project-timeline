@@ -15,11 +15,14 @@
      結構說明：
        <schedule>
          <shift name="班別名稱" color="amber|teal|indigo|rose|moss">
-           <task name="項目名稱" start="HH:MM" startDay="0" end="HH:MM" endDay="0|1">
+           <task name="項目名稱" code="兩位數字代號，如 01" start="HH:MM" startDay="0" end="HH:MM" endDay="0|1">
              <desc>時間內說明文字</desc>
            </task>
          </shift>
        </schedule>
+
+       code：兩位數字代號（例如 01、02...99），時間軸上的色塊只會顯示這個代號，
+             不會顯示完整項目名稱（名稱只會出現在左側欄與下方說明框裡）。
 
        startDay / endDay：0 = 當日，1 = 翌日
        （現在整條軸線是「當日00:00～翌日23:59」連續 48 小時，
@@ -28,52 +31,52 @@
 <script type="application/xml" id="scheduleData">
 <schedule>
   <shift name="白班" color="amber">
-    <task name="晨間交班" start="08:00" startDay="0" end="08:30" endDay="0">
+    <task name="晨間交班" code="01" start="08:00" startDay="0" end="08:30" endDay="0">
       <desc>接大夜班交班內容，核對個案人數與夜間異常紀錄。</desc>
     </task>
-    <task name="晨間照護與服藥" start="08:30" startDay="0" end="11:30" endDay="0">
+    <task name="晨間照護與服藥" code="02" start="08:30" startDay="0" end="11:30" endDay="0">
       <desc>協助盥洗、量測生命徵象，並依medication表核對服藥。</desc>
     </task>
-    <task name="午間用餐協助" start="11:30" startDay="0" end="13:00" endDay="0">
+    <task name="午間用餐協助" code="03" start="11:30" startDay="0" end="13:00" endDay="0">
       <desc>協助用餐或鼻胃管灌食，注意嗆咳風險並記錄攝取量。</desc>
     </task>
   </shift>
 
   <shift name="小夜班" color="teal">
-    <task name="下午活動帶領" start="14:00" startDay="0" end="16:00" endDay="0">
+    <task name="下午活動帶領" code="04" start="14:00" startDay="0" end="16:00" endDay="0">
       <desc>帶領團體活動或復健操，觀察個案參與狀況並記錄。</desc>
     </task>
-    <task name="晚間用餐與服藥" start="17:00" startDay="0" end="18:30" endDay="0">
+    <task name="晚間用餐與服藥" code="05" start="17:00" startDay="0" end="18:30" endDay="0">
       <desc>協助晚餐與晚間用藥，留意糖尿病個案的血糖監測。</desc>
     </task>
-    <task name="晚間交班準備" start="22:00" startDay="0" end="23:00" endDay="0">
+    <task name="晚間交班準備" code="06" start="22:00" startDay="0" end="23:00" endDay="0">
       <desc>整理當日紀錄，準備交班給大夜班，清點耗材庫存。</desc>
     </task>
   </shift>
 
   <shift name="大夜班" color="indigo">
-    <task name="夜間巡房" start="23:00" startDay="0" end="06:00" endDay="1">
+    <task name="夜間巡房" code="07" start="23:00" startDay="0" end="06:00" endDay="1">
       <desc>跨夜作業，每兩小時巡視翻身、監測生命徵象並記錄。</desc>
     </task>
-    <task name="晨間交班整理" start="06:00" startDay="1" end="08:00" endDay="1">
+    <task name="晨間交班整理" code="08" start="06:00" startDay="1" end="08:00" endDay="1">
       <desc>彙整夜間異常事項，準備與白班交接。</desc>
     </task>
   </shift>
 
   <shift name="洗澡班" color="rose">
-    <task name="上午沐浴協助" start="09:00" startDay="0" end="11:00" endDay="0">
+    <task name="上午沐浴協助" code="09" start="09:00" startDay="0" end="11:00" endDay="0">
       <desc>依排定順序協助個案沐浴，注意水溫與防滑，紀錄皮膚狀況。</desc>
     </task>
-    <task name="下午沐浴協助" start="15:00" startDay="0" end="16:30" endDay="0">
+    <task name="下午沐浴協助" code="10" start="15:00" startDay="0" end="16:30" endDay="0">
       <desc>接續上午未完成個案，完成後回填沐浴紀錄表。</desc>
     </task>
   </shift>
 
   <shift name="教學班" color="moss">
-    <task name="新進人員教育訓練" start="10:00" startDay="0" end="11:30" endDay="0">
+    <task name="新進人員教育訓練" code="11" start="10:00" startDay="0" end="11:30" endDay="0">
       <desc>教授基本照護技巧與緊急應變流程，並進行操作示範。</desc>
     </task>
-    <task name="個案照護計畫討論" start="15:30" startDay="0" end="16:30" endDay="0">
+    <task name="個案照護計畫討論" code="12" start="15:30" startDay="0" end="16:30" endDay="0">
       <desc>與各班別討論個案照護計畫調整，更新照護紀錄。</desc>
     </task>
   </shift>
@@ -186,7 +189,7 @@
   .lane .track-cell{min-height:56px;border-bottom:1px solid var(--line);}
 
   .bar{position:absolute;top:10px;bottom:10px;border-radius:3px;cursor:pointer;
-    font-size:12px;display:flex;align-items:center;padding:0 10px;
+    font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 6px;
     overflow:hidden;white-space:nowrap;border:1px solid rgba(0,0,0,.12);
     transition:filter .15s ease, box-shadow .15s ease;}
   .bar:hover{filter:brightness(0.95);box-shadow:0 0 0 2px rgba(0,0,0,.18) inset;}
@@ -212,19 +215,20 @@
   footer.legend i.moss{background:var(--moss);}
 
   .detail-panel{margin-top:14px;border:1px solid var(--line);background:#fff;border-radius:2px;
-    padding:18px 20px;min-height:64px;}
-  .detail-panel .ph{color:var(--ink-soft);font-size:13px;}
-  .detail-panel .d-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;}
-  .detail-panel .d-head .d-shift{font-size:12px;padding:2px 8px;border-radius:10px;font-weight:700;}
+    padding:18px 20px;min-height:64px;max-height:360px;overflow-y:auto;overflow-x:hidden;}
+  .detail-panel .ph{color:var(--ink-soft);font-size:19.5px;}
+  .detail-panel .d-head{display:flex;align-items:baseline;gap:14px;margin-bottom:9px;flex-wrap:wrap;}
+  .detail-panel .d-head .d-shift{font-size:18px;padding:3px 12px;border-radius:14px;font-weight:700;
+    white-space:nowrap;}
   .detail-panel .d-head .d-shift.amber{background:var(--amber-bg);color:#5c3f14;}
   .detail-panel .d-head .d-shift.teal{background:var(--teal-bg);color:#173e37;}
   .detail-panel .d-head .d-shift.indigo{background:var(--indigo-bg);color:#1f2846;}
   .detail-panel .d-head .d-shift.rose{background:var(--rose-bg);color:#5c2229;}
   .detail-panel .d-head .d-shift.moss{background:var(--moss-bg);color:#2e3f1a;}
-  .detail-panel .d-head .d-name{font-weight:700;font-size:15px;}
-  .detail-panel .d-time{font-size:12px;color:var(--ink-soft);margin-bottom:8px;}
-  .detail-panel .d-desc{font-size:13px;line-height:1.7;}
-  .detail-panel .d-actions{margin-top:12px;display:flex;gap:8px;}
+  .detail-panel .d-head .d-name{font-weight:700;font-size:22.5px;word-break:break-word;}
+  .detail-panel .d-time{font-size:18px;color:var(--ink-soft);margin-bottom:12px;}
+  .detail-panel .d-desc{font-size:19.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word;}
+  .detail-panel .d-actions{margin-top:16px;display:flex;gap:8px;}
 </style>
 </head>
 <body>
@@ -274,9 +278,15 @@
         <label>新班別名稱</label>
         <input type="text" id="fNewShiftName" placeholder="例如：教學班">
       </div>
-      <div class="field">
-        <label>項目名稱</label>
-        <input type="text" id="fName" required>
+      <div class="field-row">
+        <div class="field" style="max-width:110px;">
+          <label>代號（兩位數字）</label>
+          <input type="text" id="fCode" maxlength="2" pattern="[0-9]{2}" placeholder="01" required>
+        </div>
+        <div class="field">
+          <label>項目名稱</label>
+          <input type="text" id="fName" required>
+        </div>
       </div>
       <div class="field-row">
         <div class="field">
@@ -350,8 +360,9 @@ let idCounter = 0;
 function nextId(prefix) { return `${prefix}_${++idCounter}_${Date.now().toString(36)}`; }
 
 class ScheduleTask {
-  constructor(id, name, startMin, endMin, desc) {
+  constructor(id, code, name, startMin, endMin, desc) {
     this.id = id;
+    this.code = code;         // 兩位數字代號，例如 "01"，只顯示在時間軸色塊上
     this.name = name;
     this.startMin = startMin; // 0 ~ 2879
     this.endMin = endMin;     // 0 ~ 2880
@@ -402,11 +413,12 @@ function parseSchedule(xmlText) {
     const taskNodes = Array.from(shiftNode.getElementsByTagName("task"));
     const tasks = taskNodes.map(taskNode => {
       const tName = taskNode.getAttribute("name");
+      const tCode = taskNode.getAttribute("code") || "";
       const sMin = toAbsoluteMinutes(taskNode.getAttribute("start"), Number(taskNode.getAttribute("startDay") || 0));
       const eMin = toAbsoluteMinutes(taskNode.getAttribute("end"), Number(taskNode.getAttribute("endDay") || 0));
       const descNode = taskNode.getElementsByTagName("desc")[0];
       const desc = descNode ? descNode.textContent.trim() : "";
-      return new ScheduleTask(nextId("t"), tName, sMin, eMin, desc);
+      return new ScheduleTask(nextId("t"), tCode, tName, sMin, eMin, desc);
     });
 
     return new Shift(nextId("s"), name, colorKey, tasks);
@@ -471,7 +483,7 @@ function renderLanes() {
         <span class="shift-name">${shift.name}</span>
         <button type="button" class="add-task-btn" title="在「${shift.name}」新增項目" data-shift-id="${shift.id}">＋</button>
       </div>
-      ${shift.tasks.map(t => `<div class="task-name" data-shift-id="${shift.id}" data-task-id="${t.id}">${t.name}</div>`).join("")}
+      ${shift.tasks.map(t => `<div class="task-name" data-shift-id="${shift.id}" data-task-id="${t.id}">[${t.code || "--"}] ${t.name}</div>`).join("")}
     `;
     row.appendChild(label);
 
@@ -485,8 +497,9 @@ function renderLanes() {
       bar.dataset.shiftId = shift.id;
       bar.dataset.taskId = task.id;
       bar.style.left = px(task.startMin) + "px";
-      bar.style.width = Math.max(px(task.endMin - task.startMin), 10) + "px";
-      bar.textContent = task.name;
+      bar.style.width = Math.max(px(task.endMin - task.startMin), 22) + "px";
+      bar.textContent = task.code || "--";
+      bar.title = task.name; // 滑鼠停留可看到完整名稱
       bar.addEventListener("click", () => showDetail(shift.id, task.id));
       track.appendChild(bar);
     });
@@ -511,7 +524,7 @@ function showDetail(shiftId, taskId) {
   panel.innerHTML = `
     <div class="d-head">
       <span class="d-shift ${shift.colorKey}">${shift.name}</span>
-      <span class="d-name">${task.name}</span>
+      <span class="d-name">[${task.code || "--"}] ${task.name}</span>
     </div>
     <div class="d-time">${minutesToLabel(task.startMin)} －－ ${minutesToLabel(task.endMin)}</div>
     <div class="d-desc">${task.desc || "（尚未填寫說明）"}</div>
@@ -592,6 +605,7 @@ function openTaskForm(mode, shiftId, taskId) {
     const shift = shifts.find(s => s.id === shiftId);
     const task = shift.tasks.find(t => t.id === taskId);
     document.getElementById("taskModalTitle").textContent = "編輯項目";
+    document.getElementById("fCode").value = task.code || "";
     document.getElementById("fName").value = task.name;
     document.getElementById("fDesc").value = task.desc;
     document.getElementById("fStartDay").value = String(Math.floor(task.startMin / DAY_MIN));
@@ -630,6 +644,7 @@ function handleFormSubmit(e) {
     shift = shifts.find(s => s.id === shiftSelectVal);
   }
 
+  const code = document.getElementById("fCode").value.trim();
   const name = document.getElementById("fName").value.trim();
   const startDay = Number(document.getElementById("fStartDay").value);
   const startTime = document.getElementById("fStartTime").value;
@@ -637,6 +652,7 @@ function handleFormSubmit(e) {
   const endTime = document.getElementById("fEndTime").value;
   const desc = document.getElementById("fDesc").value.trim();
 
+  if (!/^[0-9]{2}$/.test(code)) { alert("代號請輸入兩位數字，例如 01、02...99"); return; }
   if (!name || !startTime || !endTime) { alert("請完整填寫項目名稱與開始／結束時間"); return; }
 
   const startMin = toAbsoluteMinutes(startTime, startDay);
@@ -651,9 +667,9 @@ function handleFormSubmit(e) {
     // 從原本班別移除舊的項目（若編輯時把班別換掉了，也能正確搬移）
     const oldShift = shifts.find(s => s.id === editingShiftId);
     if (oldShift) oldShift.tasks = oldShift.tasks.filter(t => t.id !== editingTaskId);
-    shift.tasks.push(new ScheduleTask(editingTaskId, name, startMin, endMin, desc));
+    shift.tasks.push(new ScheduleTask(editingTaskId, code, name, startMin, endMin, desc));
   } else {
-    shift.tasks.push(new ScheduleTask(nextId("t"), name, startMin, endMin, desc));
+    shift.tasks.push(new ScheduleTask(nextId("t"), code, name, startMin, endMin, desc));
   }
 
   closeTaskModal();
@@ -692,7 +708,7 @@ function buildExportXML() {
     shift.tasks.forEach(task => {
       const sDay = Math.floor(task.startMin / DAY_MIN);
       const eDay = Math.floor(task.endMin / DAY_MIN);
-      lines.push(`    <task name="${escapeXml(task.name)}" start="${minToHHMM(task.startMin % DAY_MIN)}" startDay="${sDay}" end="${minToHHMM(task.endMin % DAY_MIN)}" endDay="${eDay}">`);
+      lines.push(`    <task name="${escapeXml(task.name)}" code="${escapeXml(task.code || "")}" start="${minToHHMM(task.startMin % DAY_MIN)}" startDay="${sDay}" end="${minToHHMM(task.endMin % DAY_MIN)}" endDay="${eDay}">`);
       lines.push(`      <desc>${escapeXml(task.desc)}</desc>`);
       lines.push(`    </task>`);
     });
