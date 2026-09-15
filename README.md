@@ -1,5 +1,7 @@
 # project-timeline 線上專案進度時間軸表 https://achir1015.github.io/project-timeline/
-<img width="1437" height="975" alt="{F0202AFD-C1AF-4895-BFF5-3871A3A827AE}" src="https://github.com/user-attachments/assets/af5c4833-b7fd-4ea2-96bc-e55397bcfd24" />
+<img width="1812" height="945" alt="image" src="https://github.com/user-attachments/assets/2008bed5-1cb4-43e3-bb1b-c2c25379b09c" />
+<img width="1691" height="727" alt="image" src="https://github.com/user-attachments/assets/8ee0239d-bbe3-4f3e-a2e0-83ae33f3132c" />
+
 
 一個不用架伺服器、開檔案就能用的排程時間軸表，用 HTML＋內嵌 XML 當資料庫，畫面用 JavaScript 讀 XML、畫成一格一格的時間軸。
 
