@@ -120,6 +120,8 @@
     display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;}
   header.title-block h1{font-family:"Noto Serif TC",serif;font-weight:700;font-size:28px;
     letter-spacing:2px;margin:0;}
+  .title-sub{font-family:"Noto Serif TC",serif;font-weight:500;font-size:25.2px; /* 主標題28px的90%，即小10% */
+    letter-spacing:1px;color:var(--ink);margin-top:4px;}
   header.title-block .subtitle{font-size:13px;color:var(--ink-soft);}
   p.hint{font-size:13px;color:var(--ink-soft);margin:0 0 14px;}
 
@@ -248,7 +250,10 @@
 <div class="page">
 
   <header class="title-block">
-    <h1>線上專案進度時間軸表</h1>
+    <div>
+      <h1>線上專案進度時間軸表</h1>
+      <div class="title-sub">呼吸照護病房病房助理工作流程</div>
+    </div>
     <div style="text-align:right;">
       <div id="today-label" class="subtitle"></div>
       <div id="syncStatus" class="subtitle">🔄 連線 Firebase 中...</div>
