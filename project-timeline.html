@@ -602,12 +602,16 @@ function renderLanes() {
 
     const label = document.createElement("div");
     label.className = `label-cell lane-label ${shift.colorKey}`;
+    // 左側清單只依「代號」排序來顯示，不會更動 shift.tasks 本身儲存的順序
+    const sortedForLabel = [...shift.tasks].sort((a, b) =>
+      (a.code || "").localeCompare(b.code || "", undefined, { numeric: true })
+    );
     label.innerHTML = `
       <div class="lane-head">
         <span class="shift-name">${shift.name}</span>
         <button type="button" class="add-task-btn" title="在「${shift.name}」新增項目" data-shift-id="${shift.id}">＋</button>
       </div>
-      ${shift.tasks.map(t => `<div class="task-name" data-shift-id="${shift.id}" data-task-id="${t.id}">[${t.code || "--"}] ${t.name}</div>`).join("")}
+      ${sortedForLabel.map(t => `<div class="task-name" data-shift-id="${shift.id}" data-task-id="${t.id}">[${t.code || "--"}] ${t.name}</div>`).join("")}
     `;
     row.appendChild(label);
 
