@@ -28,7 +28,7 @@
      結構說明：
        <schedule>
          <shift name="班別名稱" color="amber|teal|indigo|rose|moss">
-           <task name="項目名稱" code="兩位數字代號，如 01" start="HH:MM" startDay="0" end="HH:MM" endDay="0|1">
+           <task name="項目名稱" code="兩位數字代號，如 01" url="選填，輔助說明連結網址" start="HH:MM" startDay="0" end="HH:MM" endDay="0|1">
              <desc>時間內說明文字</desc>
            </task>
          </shift>
@@ -44,39 +44,271 @@
 <script type="application/xml" id="scheduleData">
 <schedule>
   <shift name="D白班" color="amber">
-    <task name="晨間交班" code="01" start="08:00" startDay="0" end="08:30" endDay="0">
-      <desc>接大夜班交班內容，核對個案人數與夜間異常紀錄。</desc>
+    <task name="晨間點班與交班" code="01" start="07:20" startDay="0" end="07:30" endDay="0">
+      <desc>接大夜班交班內容，核對個案人數與夜間異常紀錄。07:20以前著整齊、配戴名牌、點班完成(有缺物品請向上一班追尋,如無追尋自行負責)。</desc>
     </task>
-    <task name="晨間照護與服藥" code="02" start="08:30" startDay="0" end="11:30" endDay="0">
-      <desc>協助盥洗、量測生命徵象，並依medication表核對服藥。</desc>
+    <task name="餐點核對與耗材發放" code="02" start="07:30" startDay="0" end="07:40" endDay="0">
+      <desc>營養室會送來早餐與早點。由白班A組負責點餐數量與各單一病人奶餵食熱量。白班B組負責詢問外傭需求並發送尿布、看護墊等耗材。</desc>
     </task>
-    <task name="午間用餐協助" code="03" start="11:30" startDay="0" end="13:00" endDay="0">
-      <desc>協助用餐或鼻胃管灌食，注意嗆咳風險並記錄攝取量。</desc>
+    <task name="晨間發餐與病房巡視" code="03" start="07:40" startDay="0" end="07:50" endDay="0">
+      <desc>A組核餐、B組發尿布(白班B組負責詢問外傭需求並發送尿布、看護墊等耗材。)。
+01.對於全責病人的早餐留給當日大夜班作為隔日早上06:00大夜班餵食全責病人的餐。全責病人留下的早餐放置於護理站櫃內。
+02.有外傭照護的病人早餐，給外傭當日，於外傭大夜隔日早上06:00餵食。
+03.全責與有外傭照護的病人早點餐，於09:00~10:00餵食。(當日洗澡或洗頭後再行餵食)
+
+詳細說明
+01.於病房外交班後巡視病房,向病人自我介紹,同時於床頭掛上名牌。
+02.核對餐無誤後,各組各自發早餐奶(A組核餐、B組發尿布)
+    (1)全責病人「早餐」,留給當日大夜隔日早上6點餵食。
+        例:日期5/12全責病人「早餐」留給日期5/13早上6點大夜餵食。
+    (2)病人「早點」9一10點餵食(當日洗澡或洗頭後餵食)。
+    (3)大夜班護理師會將早上需要換管(鼻餵管、氣切管、腹部餵食管)的名單交由大夜班病房助理負責通知外傭與負責全責的白班病房助理，病人「早點」9一10點餵食需先換管後再餵食。</desc>
+    </task>
+    <task name="身體清潔與早點灌食" code="04" start="07:40" startDay="0" end="11:00" endDay="0">
+      <desc>承擔照顧由802病房為開端。
+情況一、3人上班一A組B組C組,全責病人除以3,若無法平均,由A組開始加人數,舉例:6、5、5或是6、6、5。
+情況二、2人上班一A組B組,全責病人除以2,分A組B組,A組開始加人數，舉例:6、5
+
+身體清潔工作
+01.三組:
+    (1)A組、B組、C組時,一起執行身體清潔工作至結束。
+        備註:如有新進同事WA時，請2人一組一起完成。
+        A組、B組、C組:互相合作方式,例如A組十B組或B組+C組一同翻身擦澡。
+    (2)A組、B組、C組:09:00時間各自段落負責餵奶，評估病人消化情形並協助餵食、清洗餵食器具。
+02.兩組:
+    一起換尿布,翻身、會陰沖、擦澡。
+03.洗澡日:
+    (1)全責澡日:洗澡+頭與更換氣切帶、當日無法澡病人需「擦澡+頭」。
+    (2)外傭洗澡日:庑澡+洗頭與更換氣切帶,當日無法洗澡病人需「擦澡+洗頭」。
+    (3)非洗澡日:每日應擦澡及更換氣切帶。(若氣切待無法固定時，應換新的氣切帶，氣切帶屬病人家屬自行購置)。
+    (4)每月第一週全責、外傭洗澡日，需拆下「逃生」並以75%精擦拭床墊消毒後「翻床墊」然後重新套上「逃生滑墊」及確認「逃生滑蟄」蜂鳴器。
+    (5)主護負有查核職責。
+04.換床單:
+    (1)各組洗澡日各自段落更換床單。
+    (2)疥瘡病人床單每日更換。
+05.各組協助負責段落可下床病人坐輪椅、協助換藥及即時處理事項。
+06.雙週星期五、星期六量全責病人體重(最晚週六務完成有病人體重)。
+07.各組協助
+    (1)負責段落送檢。
+    (2)測量腎體重。
+08.B組協助男、女更衣間清潔(廁所、制服協助歸位),髒亂請清班打掃。
+09.各組負責段落巡視病房維持環境整潔。
+10.有隔病患出院或解除隔請知被服更換床簾。
+11.解除隔病人應將床旁桌收拾至儀間、診、治療盤、血壓計應擦拭。並更換新的夾鏈袋。(假若隔病人出院應由白通知衣房更換床簾， 及清潔班床位清潔,六日可順至星期一完成)。</desc>
+    </task>
+    <task name="午餐灌食與會客待命" code="05" start="11:00" startDay="0" end="12:00" endDay="0">
+      <desc>協助用餐或鼻胃管灌食，注意嗆咳風險並記錄攝取量。
+11：00至11：30家屬會客時間，單位病房房助理隨時待命準備，有需求時適時處理。
+01.各組自行發放餵食飮食。
+02.各組評估病人消化情形並助餵食。
+03.各組處理病人臨時狀況。</desc>
+    </task>
+    <task name="同仁輪流用餐" code="06" start="12:00" startDay="0" end="13:00" endDay="0">
+      <desc>同仁輪流進餐。</desc>
+    </task>
+    <task name="突發狀況處置" code="07" start="13:00" startDay="0" end="13:30" endDay="0">
+      <desc>01.處理病人臨時狀況。(約束帶掙脫、鼻餵管滑落、氣切管跳開、呼叫鈴響、病人不自主排便、外傭需要協助、全責病人吐奶、病人發燒需要冰寶協助、尿袋爆滿需到尿等等)</desc>
+    </task>
+    <task name="午後照護與耗材整備" code="08" start="13:30" startDay="0" end="15:20" endDay="0">
+      <desc>01.製作各種耗材(NC貼30 片/包，每日維持10包、耳溫套組每日持30個)(尿管貼10片/包,每日維持10包)。
+02.換尿布、翻身、叩背(13:30)，並依病人需要予適當支托。
+03.在指導下,協助臥床病人的被動運動。
+04.評估病人消化情形並協助灌食。
+05.記錄飲食量、倒尿(含秤重、協助登記輸出入量)。
+06.處理病人臨時狀況、發管灌飲食。
+07.檢查「住院病人身體照護單」「預防跌倒紀錄單」「翻身紀錄單」書寫完整。A13照護紀錄。
+08.維持病人單位環境整潔:注意病床、床單、病人服,床旁桌桌面等整潔。
+09.於03:18開始與小夜班接班者病房助理一起與當班護理師交班。
+10.C組,確認約束帶之安全量10組,不足需至B1洗衣房領取。(如無病人、隔離衣、約束手套、約束帶、中單、枕頭套、棉被、棉被套、毛巾等，諝劦助聯絡)。
+11.各組於15:00前整理病房內隔桶更換。
+    B組確認汙物室隔桶更換。
+12.A組下班前(2人時)或(3人時)，補充用物:尿布、看護墊、濕紙巾、衛生紙(每周五發)等並登記。
+13.協助推負責段落鉛板。(若當班有需要照X光需求時)
+14.不定時間各組補充抽痰瓶裝開水。(定時間由大夜班B組負責)</desc>
+    </task>
+    <task name="白班小夜交接班" code="09" start="15:20" startDay="0" end="15:40" endDay="0">
+      <desc>白班病房助理各組交班。會同當班護理師一起交班。</desc>
     </task>
   </shift>
-
   <shift name="E小夜班" color="teal">
-    <task name="下午活動帶領" code="04" start="14:00" startDay="0" end="16:00" endDay="0">
-      <desc>帶領團體活動或復健操，觀察個案參與狀況並記錄。</desc>
+    <task name="接班確認與巡房" code="01" start="15:20" startDay="0" end="15:40" endDay="0">
+      <desc>於病房外交班後巡視病房,向病人自我介紹,同時於床頭掛上名牌。會同當班護理師與白班交班者，聆聽交班者逐一說明當天照護狀況與注意事項。</desc>
     </task>
-    <task name="晚間用餐與服藥" code="05" start="17:00" startDay="0" end="18:30" endDay="0">
-      <desc>協助晚餐與晚間用藥，留意糖尿病個案的血糖監測。</desc>
+    <task name="初次翻身與晚餐灌食" code="02" start="16:00" startDay="0" end="19:30" endDay="0">
+      <desc>製作各種耗材(NG貼30片/包,每日維持杺包、耳溫套組每日維持30個)(組尿管貼10片/包,每日維持10包)由802病房為開端，全責病人除以2，分A組、B組，若無法平均，由A組開始加人數。舉例:6、5
+(註:表示全責人數  A組、B組)
+0l.兩人一起換尿布、翻身、叩背(19:00),並依病人需要予適當支托。
+    註:翻身時間(16:00、19:00、22:00 )  無論大小便一律需會陰沖洗。餵食時間(17:30丶20:30)
+02.發菅灌飲食。
+03.評估病人消化情形並協助灌食。
+04.協助餐盤回收(清楚病人)。
+05.同仁輪流用餐。(約在18:30左右)
+06.解除隔病人應將床旁桌收拾至儀器間、聽診、治療盤、血壓計應酒精擦拭。並更換新的夾鏈袋·(假若隔離病人於夜班出院應交接下 一班，待隔日白班知衣房更換床簾，及清潔班床位清潔)。
+7.雙週星期五測量外傭負責之病人體重。(勿由外傭一人執行量體重)</desc>
     </task>
-    <task name="晚間交班準備" code="06" start="22:00" startDay="0" end="23:00" endDay="0">
-      <desc>整理當日紀錄，準備交班給大夜班，清點耗材庫存。</desc>
+    <task name="二次翻身與晚點灌食" code="03" start="19:30" startDay="0" end="21:30" endDay="0">
+      <desc>製作各種耗材(NG貼30片/包,每日維持杺包、耳溫套組每日維持30個)(組尿管貼10片/包,每日維持10包)由802病房為開端，全責病人除以2，分A組、B組，若無法平均，由A組開始加人數。舉例:6、5
+(註:表示全責人數  A組、B組)
+0l.兩人一起換尿布、翻身、叩背(19:00),並依病人需要予適當支托。
+    註:翻身時間(16:00、19:00、22:00 )  無論大小便一律需會陰沖洗。餵食時間(17:30丶20:30)
+02.發菅灌飲食。
+03.評估病人消化情形並協助灌食。
+04.協助餐盤回收(清楚病人)。
+05.同仁輪流用餐。(約在18:30左右)
+06.解除隔病人應將床旁桌收拾至儀器間、聽診、治療盤、血壓計應酒精擦拭。並更換新的夾鏈袋·(假若隔離病人於夜班出院應交接下 一班，待隔日白班知衣房更換床簾，及清潔班床位清潔)。
+7.雙週星期五測量外傭負責之病人體重。(勿由外傭一人執行量體重)</desc>
+    </task>
+    <task name="夜間清潔前置作業" code="04" start="21:30" startDay="0" end="22:00" endDay="0">
+      <desc></desc>
+    </task>
+    <task name="三次翻身與睡前整理" code="05" start="22:00" startDay="0" end="23:10" endDay="0">
+      <desc></desc>
+    </task>
+    <task name="護理紀錄登錄" code="06" start="23:10" startDay="0" end="23:20" endDay="0">
+      <desc></desc>
+    </task>
+    <task name="小夜大夜交接巡房" code="07" start="23:20" startDay="0" end="23:40" endDay="0">
+      <desc></desc>
     </task>
   </shift>
-
   <shift name="N大夜班" color="indigo">
-    <task name="夜間巡房" code="07" start="23:00" startDay="0" end="06:00" endDay="1">
-      <desc>跨夜作業，每兩小時巡視翻身、監測生命徵象並記錄。</desc>
+    <task name="夜班接班與巡房點班" code="01" start="23:20" startDay="0" end="23:40" endDay="0">
+      <desc>於病房外交班後巡視病房,向病人自我介紹,同時於床頭掛上名牌。著裝整齊、點班完成。(有缺物品請向上一班追尋，如無追尋自行負責)。接班須一起與交班病房助理與當班護理師接班。跨夜作業，每兩小時巡視翻身、監測生命徵象並記錄。</desc>
     </task>
-    <task name="晨間交班整理" code="08" start="06:00" startDay="1" end="08:00" endDay="1">
-      <desc>彙整夜間異常事項，準備與白班交接。</desc>
+    <task name="大夜初巡與前置準備" code="02" start="23:40" startDay="0" end="01:10" endDay="1">
+      <desc>由802病房為開端，全責病人除以2，分A組、B組，若無法平均，由A組開始加人數。舉例:全責數為11床時，A組6床、B組5床。
+
+時間處理內容：
+1.A組依據「預防感染」磁鐵之床位床位，補充拋棄式隔離衣並發放大夜外傭需求。
+2·協助處理雜事(包含做病歷…等等)整理護理站環境、桌子，補充病房擦手紙及洗手液。
+3·兩組一起換尿布、翻身無論大小便一律會陰沖洗，並依病人需要予適當支托。
+    註:翻身時間01:00、05:10
+    註:餵食時問06:15
+4·評估病人消化情形並協助補充開水或管灌。
+5·檢查各自段落「預防跌倒紀錄單」「翻身紀錄單」書寫完整。
+6·各組各自清洗更換並清洗灌食空針盒。
+7·各組各自補充床位Ⅰ/0單及預防跌倒紀錄單及翻身紀錄單。</desc>
+    </task>
+    <task name="大夜初次翻身護理" code="03" start="01:00" startDay="1" end="02:20" endDay="1">
+      <desc>01、翻身時間由A、B組一起作業。
+02、B組飲水機、烤箱、檢查拔除烤箱電源線與牆上檢查項目簽名。
+03、翻身當下病床可以開啟天花板上大燈，再行使作業，確保作業安全。
+04、依據翻身作業程序進行翻身。
+
+A組備車(翻身作業時需要工作車)
+說明
+01、備車項目最上層有磅秤、雜物工具盒(剪刀、4X4紗布、尿貼1包、鼻貼1包、衛生貼紙膠台1各)、小尿布30片、看護墊20片、大尿布2片。工作使用衛生手套一至兩盒。
+02、工作車第二層放置小毛巾10條、中毛巾10條、長袍雨中單各5件、大浴巾5條。
+03、尿布袋(垃圾袋)3各、紅色感染袋1各。
+04、工作車邊緣裝尿布袋(中間)各、右邊感染袋1各、汙衣布袋。</desc>
+    </task>
+    <task name="環境消毒與管路水補充" code="04" start="02:20" startDay="1" end="03:00" endDay="1">
+      <desc>A組清潔作業
+01、擦拭(用酒精與感染巾，勿用抹布與清水。)護理站桌面。
+02、擦拭所有沖洗台。
+03、擦拭討論室桌面。
+A組補充各病床(30床、8183除外&lt;--小夜班A組備料)抽痰管與痰瓶、蒸餾水2瓶。
+
+B組發餐06:20後早餐
+B組補充洗管水(衛生長管清洗)、檢查洗手液與洗手乳、擦手紙盒補充。
+B組將全責病床水壺放置於工作車，準備倒去壺中開水與清潔水壺。</desc>
+    </task>
+    <task name="病房安全巡視與備水" code="05" start="03:00" startDay="1" end="04:00" endDay="1">
+      <desc>B組裝熱開水前準備
+01、至茶水間倒去水壺內的水。
+02、清潔水壺表面、水壺蓋、水壺內面(防水垢)。
+B組完成以上作業後，至七樓裝熱開水。B組裝好水後，再一一放回所屬全責病床桌面。
+
+A組巡視各病房，查看是否異常(發現聲音、味道、是否有飄煙霧、天花板是否滴水、地面是否積水、病房大門要開、是否地震)。A組前作業未完成繼續。</desc>
+    </task>
+    <task name="晨間面部清潔與刮鬍" code="06" start="04:00" startDay="1" end="05:10" endDay="1">
+      <desc>01、每週六:各組各自更換外科接管、痰管清洗瓶、檢視手部消毒液補充、耳溫套組、漱口杯。
+02、每週日：各組各自檢視病床床尾酒精洗手液及補充。
+03、每月第一周的周六：各組各自更換短管並貼上更換日期。
+04、每月第一周周六更換牙刷(最後1隻用掉，請交班白班人員，聯絡家屬購買)
+05、各組各自早晨清潔(刷牙、洗臉、刮鬍子)。
+06、解除隔離病人應將床旁桌收拾至儀器間，聽診器、治療盤、血壓計應酒精擦拭。並更換新的夾鏈袋。(假若隔離病人於夜班出院應交接給下一班待隔日白班通知洗衣房更換床簾，及清潔班床位清潔)。</desc>
+    </task>
+    <task name="大夜二次翻身護理" code="07" start="05:10" startDay="1" end="06:20" endDay="1">
+      <desc>01、翻身時間由A、B組一起作業。
+02、翻身當下病床可以開啟天花板上大燈，再行使作業，確保作業安全。
+04、依據翻身作業程序進行翻身。</desc>
+    </task>
+    <task name="清晨灌食與環境復原" code="08" start="06:20" startDay="1" end="07:20" endDay="1">
+      <desc>彙整夜間異常事項，準備與白班交接。
+01、評估病人消化情形並協助灌食「早餐」(前一日白班留下早餐)，保持床旁桌桌面等整潔。
+02、請外傭起床整理陪病床並歸位(所有吊掛衣服收入衣櫥)，並整理病床擺放整齊。
+03·維持病人單位環境整潔:注意病床、床單、病人服等整潔。
+04·完成A13照護紀錄輸入。</desc>
+    </task>
+    <task name="晨間交接巡房" code="09" start="07:20" startDay="1" end="07:40" endDay="1">
+      <desc>各組(白班接班與大夜班交班)會同當班護理師逐房間探視病床目前狀況，並回報給當值班的護理師。發現異常時，交班A、B組一起協同處理，完成後才能完成交接班作業。</desc>
     </task>
   </shift>
-
   <shift name="T教學班" color="moss">
+    <task name="白班照護常規指引" code="01" start="07:20" startDay="0" end="15:40" endDay="0">
+      <desc>01、每班病人單位桌面保持乾淨(如：牛奶滴在桌上、床上、地上、床欄等擦乾淨，衛生紙、尿布、濕紙巾勿放置桌上或不該出現的地方)。
+02、每班NG病患餵食完用清水沖，並用手擠壓管壁以免牛奶殘留。
+03、工作車請依序排列整齊至沐浴間擺放，檯面上整理乾淨、工作服(隔離衣)請勿任意放置。
+04、每班隨時補充查核及維護酒精性乾洗手液。
+05、空閒之餘，護理站請各留一人協助相關事宜，勿聚集在討論室。(除用餐時間一律勿聚集討論室)。
+06、請勿在護理站上網或查詢和工作不相關的內容。
+07、對於照護病人上有疑問,請找當班護理師，不要自己亂交班亂做。
+08、上班中，請依規定服裝儀容穿著與裝扮。
+09、服務中，請依服務禮儀規範服務病患。
+10、注意病人隱私，執行清潔時請務必拉上床簾,隔離病人請落實隔離政策正確穿脫隔離衣。
+11、服務環境，請大家共同維持清潔。
+12、全責定義:由護理師呯估。
+13、每班下班前檢查隔離桶，八分滿就要更換。
+14、每班20吩之前，請以著裝完成並完成點，20分開始交班。
+15、翻身時雙人成組,請保持安靜,勿過多話語,如有問題，無法解決，請找當班(護理人員)組長或阿長。
+16、當班護理師有督促之職責，遇違反上述工作內容,造成病人安全疑慮，隨時報告護理長，護理長接獲訊息即安排會談以瞭解情形。
+17、三班交接應將自己分內工作完成，交班要清楚，上班時間請維持良好工作氣氛。
+18、當互換角色或班別時，請沈思我是否能做到，我會怎麼做…?
+19、服務病人要有忠誠度，深思自己做到了嗎?</desc>
+    </task>
+    <task name="小夜照護常規指引" code="02" start="15:20" startDay="0" end="23:40" endDay="0">
+      <desc>01、每班病人單位桌面保持乾淨(如：牛奶滴在桌上、床上、地上、床欄等擦乾淨，衛生紙、尿布、濕紙巾勿放置桌上或不該出現的地方)。
+02、每班NG病患餵食完用清水沖，並用手擠壓管壁以免牛奶殘留。
+03、工作車請依序排列整齊至沐浴間擺放，檯面上整理乾淨、工作服(隔離衣)請勿任意放置。
+04、每班隨時補充查核及維護酒精性乾洗手液。
+05、空閒之餘，護理站請各留一人協助相關事宜，勿聚集在討論室。(除用餐時間一律勿聚集討論室)。
+06、請勿在護理站上網或查詢和工作不相關的內容。
+07、對於照護病人上有疑問,請找當班護理師，不要自己亂交班亂做。
+08、上班中，請依規定服裝儀容穿著與裝扮。
+09、服務中，請依服務禮儀規範服務病患。
+10、注意病人隱私，執行清潔時請務必拉上床簾,隔離病人請落實隔離政策正確穿脫隔離衣。
+11、服務環境，請大家共同維持清潔。
+12、全責定義:由護理師呯估。
+13、每班下班前檢查隔離桶，八分滿就要更換。
+14、每班20吩之前，請以著裝完成並完成點，20分開始交班。
+15、翻身時雙人成組,請保持安靜,勿過多話語,如有問題，無法解決，請找當班(護理人員)組長或阿長。
+16、當班護理師有督促之職責，遇違反上述工作內容,造成病人安全疑慮，隨時報告護理長，護理長接獲訊息即安排會談以瞭解情形。
+17、三班交接應將自己分內工作完成，交班要清楚，上班時間請維持良好工作氣氛。
+18、當互換角色或班別時，請沈思我是否能做到，我會怎麼做…?
+19、服務病人要有忠誠度，深思自己做到了嗎?</desc>
+    </task>
+    <task name="大夜照護常規指引" code="03" start="23:20" startDay="0" end="08:40" endDay="1">
+      <desc>01、每班病人單位桌面保持乾淨(如：牛奶滴在桌上、床上、地上、床欄等擦乾淨，衛生紙、尿布、濕紙巾勿放置桌上或不該出現的地方)。
+02、每班NG病患餵食完用清水沖，並用手擠壓管壁以免牛奶殘留。
+03、工作車請依序排列整齊至沐浴間擺放，檯面上整理乾淨、工作服(隔離衣)請勿任意放置。
+04、每班隨時補充查核及維護酒精性乾洗手液。
+05、空閒之餘，護理站請各留一人協助相關事宜，勿聚集在討論室。(除用餐時間一律勿聚集討論室)。
+06、請勿在護理站上網或查詢和工作不相關的內容。
+07、對於照護病人上有疑問,請找當班護理師，不要自己亂交班亂做。
+08、上班中，請依規定服裝儀容穿著與裝扮。
+09、服務中，請依服務禮儀規範服務病患。
+10、注意病人隱私，執行清潔時請務必拉上床簾,隔離病人請落實隔離政策正確穿脫隔離衣。
+11、服務環境，請大家共同維持清潔。
+12、全責定義:由護理師呯估。
+13、每班下班前檢查隔離桶，八分滿就要更換。
+14、每班20吩之前，請以著裝完成並完成點，20分開始交班。
+15、翻身時雙人成組,請保持安靜,勿過多話語,如有問題，無法解決，請找當班(護理人員)組長或阿長。
+16、當班護理師有督促之職責，遇違反上述工作內容,造成病人安全疑慮，隨時報告護理長，護理長接獲訊息即安排會談以瞭解情形。
+17、三班交接應將自己分內工作完成，交班要清楚，上班時間請維持良好工作氣氛。
+18、當互換角色或班別時，請沈思我是否能做到，我會怎麼做…?
+19、服務病人要有忠誠度，深思自己做到了嗎?</desc>
+    </task>
     <task name="新進人員教育訓練" code="11" start="10:00" startDay="0" end="11:30" endDay="0">
       <desc>教授基本照護技巧與緊急應變流程，並進行操作示範。</desc>
     </task>
@@ -84,12 +316,11 @@
       <desc>與各班別討論個案照護計畫調整，更新照護紀錄。</desc>
     </task>
   </shift>
-
   <shift name="L洗澡班" color="rose">
-    <task name="上午沐浴協助" code="09" start="09:00" startDay="0" end="11:00" endDay="0">
+    <task name="上午沐浴照護" code="01" start="08:00" startDay="0" end="11:00" endDay="0">
       <desc>依排定順序協助個案沐浴，注意水溫與防滑，紀錄皮膚狀況。</desc>
     </task>
-    <task name="下午沐浴協助" code="10" start="15:00" startDay="0" end="16:30" endDay="0">
+    <task name="下午沐浴照護" code="02" start="13:00" startDay="0" end="16:30" endDay="0">
       <desc>接續上午未完成個案，完成後回填沐浴紀錄表。</desc>
     </task>
   </shift>
@@ -154,6 +385,32 @@
   .modal-actions .right{display:flex;gap:8px;}
   #exportArea{width:100%;min-height:220px;font-family:monospace;font-size:12px;
     border:1px solid var(--line);padding:10px;border-radius:3px;}
+  #importArea{width:100%;min-height:140px;font-family:monospace;font-size:12px;
+    border:1px solid var(--line);padding:10px;border-radius:3px;resize:vertical;}
+
+  .data-table{width:100%;border-collapse:collapse;font-size:12px;}
+  .data-table th, .data-table td{border:1px solid var(--line);padding:5px 6px;text-align:left;vertical-align:top;}
+  .data-table thead th{background:var(--paper-alt);font-size:11px;color:var(--ink-soft);
+    position:sticky;top:0;white-space:nowrap;z-index:15;}
+  /* 「項目名稱」欄凍結：水平捲動時固定在最左側，方便手機邊滑邊知道是哪一列 */
+  .data-table th.col-freeze, .data-table td.col-freeze{
+    position:sticky;left:0;background:#fff;box-shadow:2px 0 4px -2px rgba(0,0,0,.2);}
+  .data-table thead th.col-freeze{background:var(--paper-alt);z-index:25;} /* 表頭＋凍結欄交會處，層級最高 */
+  .data-table input[type="text"], .data-table input[type="time"], .data-table select{
+    width:100%;font-size:12px;padding:4px 5px;border:1px solid var(--line);border-radius:2px;
+    background:#fff;font-family:inherit;color:var(--ink);}
+  .data-table textarea.dt-desc{width:100%;min-width:220px;font-size:12px;padding:4px 5px;
+    border:1px solid var(--line);border-radius:2px;background:#fff;font-family:inherit;
+    color:var(--ink);resize:vertical;line-height:1.5;}
+  .data-table .dt-time-cell{display:flex;gap:4px;}
+  .data-table .dt-time-cell select{flex:0 0 58px;}
+  .data-table .dt-time-cell input{flex:1;min-width:70px;}
+  .data-table .dt-name-cell{display:flex;gap:4px;align-items:center;}
+  .data-table .dt-name-cell input{flex:1;min-width:80px;}
+  .data-table .dt-save-row{flex:none;white-space:nowrap;}
+  .data-table tr.dt-row-saved td.col-freeze{background:#DCEAE6 !important;}
+  .data-table tr.dt-row-saved td{background:#DCEAE6 !important;transition:background-color .2s ease;}
+
 
   /* ---------- 凍結窗格容器 ---------- */
   /* grid-scroll 同時可上下、左右滾動；標籤欄與刻度尺列各自用 sticky 固定 */
@@ -164,7 +421,7 @@
 
   .label-cell{width:190px;flex:none;position:sticky;left:0;background:#fff;
     border-right:1px solid var(--line);z-index:5;}
-  .track-cell{flex:none;position:relative;}
+  .track-cell{flex:none;position:relative;overflow:hidden;}
 
   /* 刻度尺列：整列 sticky 在頂端 */
   .ruler-row{position:sticky;top:0;z-index:20;background:var(--paper-alt);
@@ -243,7 +500,10 @@
   .detail-panel .d-head .d-name{font-weight:700;font-size:22.5px;word-break:break-word;}
   .detail-panel .d-time{font-size:18px;color:var(--ink-soft);margin-bottom:12px;}
   .detail-panel .d-desc{font-size:19.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word;}
-  .detail-panel .d-actions{margin-top:16px;display:flex;gap:8px;}
+  .detail-panel .d-link{margin-top:10px;}
+  .detail-panel .d-link a{font-size:16px;color:var(--indigo);text-decoration:underline;word-break:break-all;}
+  .detail-panel .d-actions{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;}
+  .detail-panel .d-actions .btn:disabled{opacity:.35;cursor:not-allowed;}
 </style>
 </head>
 <body>
@@ -260,7 +520,7 @@
     </div>
   </header>
   <p class="hint">
-    橫軸：當日 00:00 → 當日 23:59 → 翌日 00:00 → 翌日 23:59，每 10 分鐘一格。
+    橫軸：當日 07:00 → 當日 23:59 → 翌日 00:00 → 翌日 23:59，每 10 分鐘一格（07:00 前目前沒有排班資料，不顯示）。
     左側「班別／項目」欄與上方「時間軸」列皆為凍結窗格，上下左右滾動時都會保持可見。
     點選色塊（或左側項目名稱）可在下方查看該時段的詳細說明，並可直接新增、編輯、刪除。
     所有異動會即時同步到 Firebase，用不同裝置或分頁打開這個檔案也會看到一致的最新資料。
@@ -268,6 +528,8 @@
 
   <div class="toolbar">
     <button type="button" class="btn primary" id="btnAddTask">＋ 新增項目</button>
+    <button type="button" class="btn" id="btnTableView">資料表檢視／編輯</button>
+    <button type="button" class="btn" id="btnImport">匯入 XML</button>
     <button type="button" class="btn" id="btnExport">匯出備份（XML）</button>
   </div>
 
@@ -330,6 +592,10 @@
         <label>時間內說明</label>
         <textarea id="fDesc"></textarea>
       </div>
+      <div class="field">
+        <label>輔助說明連結（選填，例如教學影片、SOP文件網址）</label>
+        <input type="url" id="fUrl" placeholder="https://...">
+      </div>
       <div class="modal-actions">
         <button type="button" class="btn danger hidden" id="btnDeleteInForm">刪除此項目</button>
         <div class="right">
@@ -355,6 +621,68 @@
       <div class="right">
         <button type="button" class="btn" id="btnCloseExport">關閉</button>
         <button type="button" class="btn primary" id="btnCopyExport">複製</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 資料表檢視／編輯 彈窗：格式對照附件（班別/代號/項目名稱/開始日期時間/結束日期時間/時間內說明） -->
+<div class="modal-overlay hidden" id="tableModal">
+  <div class="modal-card" style="max-width:960px;">
+    <h2>資料表檢視／編輯</h2>
+    <p style="font-size:12px;color:var(--ink-soft);margin-top:-8px;">
+      可直接在表格裡修改每一列，或用「刪除」移除整列。改完按「儲存全部」才會真正寫回 Firebase；
+      按「關閉」則放棄這次的修改。
+    </p>
+    <div style="overflow:auto;max-height:55vh;border:1px solid var(--line);">
+      <table class="data-table" id="dataTable">
+        <thead>
+          <tr>
+            <th style="min-width:140px;">班別</th>
+            <th style="min-width:60px;">代號</th>
+            <th class="col-freeze" style="min-width:150px;">項目名稱</th>
+            <th style="min-width:170px;">開始日期時間</th>
+            <th style="min-width:170px;">結束日期時間</th>
+            <th style="min-width:200px;">時間內說明</th>
+            <th style="min-width:160px;">輔助連結（選填）</th>
+            <th style="min-width:50px;"></th>
+          </tr>
+        </thead>
+        <tbody id="dataTableBody"></tbody>
+      </table>
+    </div>
+    <datalist id="shiftNamesDatalist"></datalist>
+    <div class="modal-actions">
+      <button type="button" class="btn" id="btnAddTableRow">＋ 新增一列</button>
+      <div class="right">
+        <button type="button" class="btn" id="btnCloseTable">關閉</button>
+        <button type="button" class="btn primary" id="btnSaveTable">儲存全部</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 匯入 XML 彈窗：相同「項目名稱」會覆蓋原有資料 -->
+<div class="modal-overlay hidden" id="importModal">
+  <div class="modal-card" style="max-width:600px;">
+    <h2>匯入 XML</h2>
+    <p style="font-size:12px;color:var(--ink-soft);margin-top:-8px;">
+      匯入的格式跟「匯出備份」相同。同一個班別裡，只要「項目名稱」跟現有的一樣，
+      就會用匯入的內容覆蓋掉舊資料；名稱不同的話會新增成一筆新項目。
+    </p>
+    <div class="field">
+      <label>選擇 XML 檔案</label>
+      <input type="file" id="importFile" accept=".xml,text/xml">
+    </div>
+    <div class="field">
+      <label>或是直接貼上 XML 內容</label>
+      <textarea id="importArea" placeholder="貼上 &lt;schedule&gt;...&lt;/schedule&gt; 內容"></textarea>
+    </div>
+    <div class="modal-actions">
+      <div></div>
+      <div class="right">
+        <button type="button" class="btn" id="btnCloseImport">取消</button>
+        <button type="button" class="btn primary" id="btnDoImport">匯入</button>
       </div>
     </div>
   </div>
@@ -399,22 +727,24 @@ const shiftsCol = collection(db, "shifts");
    ================================================================ */
 
 const DAY_MIN = 1440;          // 一天 = 1440 分鐘
-const TOTAL_MIN = DAY_MIN * 2; // 軸線總長：當日 + 翌日 = 2880 分鐘
+const TOTAL_MIN = DAY_MIN * 2; // 資料範圍上限：當日 + 翌日 = 2880 分鐘
+const AXIS_START_MIN = 7 * 60; // 時間軸畫面從「當日 07:00」開始顯示（07:00 之前目前沒有排班資料，不畫出來）
 const PX_PER_MIN = 2;          // 每分鐘在畫面上佔多少 px（10分鐘 = 20px 一格）
-const TOTAL_PX = TOTAL_MIN * PX_PER_MIN;
+const TOTAL_PX = (TOTAL_MIN - AXIS_START_MIN) * PX_PER_MIN;
 const COLOR_PALETTE = ["amber", "teal", "indigo", "rose", "moss"]; // 新增班別時依序自動配色
 
 let idCounter = 0;
 function nextId(prefix) { return `${prefix}_${++idCounter}_${Date.now().toString(36)}`; }
 
 class ScheduleTask {
-  constructor(id, code, name, startMin, endMin, desc) {
+  constructor(id, code, name, startMin, endMin, desc, url) {
     this.id = id;
     this.code = code;         // 兩位數字代號，例如 "01"，只顯示在時間軸色塊上
     this.name = name;
     this.startMin = startMin; // 0 ~ 2879
     this.endMin = endMin;     // 0 ~ 2880
     this.desc = desc;
+    this.url = url || "";     // 選填：輔助說明的連結網址（教學影片、SOP文件等）
   }
 }
 
@@ -502,11 +832,12 @@ function parseSchedule(xmlText) {
     const tasks = taskNodes.map(taskNode => {
       const tName = taskNode.getAttribute("name");
       const tCode = taskNode.getAttribute("code") || "";
+      const tUrl = taskNode.getAttribute("url") || "";
       const sMin = toAbsoluteMinutes(taskNode.getAttribute("start"), Number(taskNode.getAttribute("startDay") || 0));
       const eMin = toAbsoluteMinutes(taskNode.getAttribute("end"), Number(taskNode.getAttribute("endDay") || 0));
       const descNode = taskNode.getElementsByTagName("desc")[0];
       const desc = descNode ? descNode.textContent.trim() : "";
-      return new ScheduleTask(nextId("t"), tCode, tName, sMin, eMin, desc);
+      return new ScheduleTask(nextId("t"), tCode, tName, sMin, eMin, desc, tUrl);
     });
 
     return new Shift(nextId("s"), name, colorKey, tasks, index);
@@ -534,14 +865,14 @@ function shiftToFirestoreData(shift) {
     order: shift.order,
     tasks: shift.tasks.map(t => ({
       id: t.id, code: t.code, name: t.name,
-      startMin: t.startMin, endMin: t.endMin, desc: t.desc
+      startMin: t.startMin, endMin: t.endMin, desc: t.desc, url: t.url || ""
     }))
   };
 }
 
 function firestoreDocToShift(id, data) {
   const tasks = (data.tasks || []).map(t =>
-    new ScheduleTask(t.id || nextId("t"), t.code || "", t.name || "", t.startMin || 0, t.endMin || 0, t.desc || "")
+    new ScheduleTask(t.id || nextId("t"), t.code || "", t.name || "", t.startMin || 0, t.endMin || 0, t.desc || "", t.url || "")
   );
   return new Shift(id, data.name || "", data.colorKey || "amber", tasks, data.order);
 }
@@ -560,17 +891,18 @@ async function saveShiftDoc(shift) {
    畫面渲染
    ================================================================ */
 
-function px(min) { return min * PX_PER_MIN; }
+function px(min) { return (min - AXIS_START_MIN) * PX_PER_MIN; }      // 軸線上的絕對位置 → 左邊距（要扣掉07:00的起點偏移量）
+function pxLen(minutes) { return minutes * PX_PER_MIN; }               // 純粹的時間長度 → 寬度（不能扣偏移量，扣了會讓所有色塊都變成最小寬度）
 
-// 畫刻度尺：每 10 分鐘一條細線，每小時一條粗線並標數字，
-// 每天開頭（00:00）用最粗的線區分「當日／翌日」
+// 畫刻度尺：從 AXIS_START_MIN（當日07:00）開始，每 10 分鐘一條細線，每小時一條粗線並標數字，
+// 遇到跨日（翌日00:00）用最粗的線區分「當日／翌日」
 function renderRuler() {
   const track = document.getElementById("rulerTrack");
   track.style.width = TOTAL_PX + "px";
   track.style.height = "52px";
   track.innerHTML = "";
 
-  for (let min = 0; min <= TOTAL_MIN; min += 10) {
+  for (let min = AXIS_START_MIN; min <= TOTAL_MIN; min += 10) {
     const isDayStart = min % DAY_MIN === 0;
     const isHour = min % 60 === 0;
 
@@ -593,6 +925,10 @@ function renderRuler() {
 }
 
 function renderLanes() {
+  const gridScroll = document.getElementById("gridScroll");
+  const prevScrollTop = gridScroll.scrollTop;
+  const prevScrollLeft = gridScroll.scrollLeft;
+
   const lanesEl = document.getElementById("lanes");
   lanesEl.innerHTML = "";
 
@@ -622,10 +958,11 @@ function renderLanes() {
     shift.tasks.forEach(task => {
       const bar = document.createElement("div");
       bar.className = `bar ${shift.colorKey}`;
+      if (task.id === selectedTaskId) bar.classList.add("selected"); // 重畫後保留原本選取的色塊
       bar.dataset.shiftId = shift.id;
       bar.dataset.taskId = task.id;
       bar.style.left = px(task.startMin) + "px";
-      bar.style.width = Math.max(px(task.endMin - task.startMin), 22) + "px";
+      bar.style.width = Math.max(pxLen(task.endMin - task.startMin), 22) + "px";
       bar.textContent = task.code || "--";
       bar.title = task.name; // 滑鼠停留可看到完整名稱
       bar.addEventListener("click", () => showDetail(shift.id, task.id));
@@ -637,6 +974,26 @@ function renderLanes() {
   });
 
   renderNowLine();
+
+  // 重畫是整個 innerHTML 重建，捲動位置要手動還原，不然畫面會跳回頂端/最左邊
+  gridScroll.scrollTop = prevScrollTop;
+  gridScroll.scrollLeft = prevScrollLeft;
+}
+
+// 記住目前選取（顯示在下方說明框）的項目 id，重畫時才能重新標記選取狀態
+let selectedTaskId = null;
+
+// 依「班別排序 → 項目代號排序」把所有項目展平成一條可以上一筆/下一筆瀏覽的序列
+function getFlatTaskSequence() {
+  const seq = [];
+  const sortedShifts = [...shifts].sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+  sortedShifts.forEach(shift => {
+    const sortedTasks = [...shift.tasks].sort((a, b) =>
+      (a.code || "").localeCompare(b.code || "", undefined, { numeric: true })
+    );
+    sortedTasks.forEach(t => seq.push({ shiftId: shift.id, taskId: t.id }));
+  });
+  return seq;
 }
 
 function showDetail(shiftId, taskId) {
@@ -644,9 +1001,23 @@ function showDetail(shiftId, taskId) {
   const task = shift && shift.tasks.find(t => t.id === taskId);
   if (!shift || !task) return;
 
+  selectedTaskId = taskId;
   document.querySelectorAll(".bar.selected").forEach(b => b.classList.remove("selected"));
   const barEl = document.querySelector(`.bar[data-task-id="${taskId}"]`);
-  if (barEl) barEl.classList.add("selected");
+  if (barEl) {
+    barEl.classList.add("selected");
+    barEl.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  }
+
+  // 上一筆／下一筆：純粹只是換成顯示序列中前後那一筆的資料，編輯功能本身不會因此改變
+  const seq = getFlatTaskSequence();
+  const idx = seq.findIndex(x => x.taskId === taskId);
+  const prevItem = idx > 0 ? seq[idx - 1] : null;
+  const nextItem = idx >= 0 && idx < seq.length - 1 ? seq[idx + 1] : null;
+
+  const linkHtml = task.url
+    ? `<div class="d-link"><a href="${task.url.replace(/"/g, "&quot;")}" target="_blank" rel="noopener">🔗 輔助說明連結</a></div>`
+    : "";
 
   const panel = document.getElementById("detailPanel");
   panel.innerHTML = `
@@ -656,19 +1027,27 @@ function showDetail(shiftId, taskId) {
     </div>
     <div class="d-time">${minutesToLabel(task.startMin)} －－ ${minutesToLabel(task.endMin)}</div>
     <div class="d-desc">${task.desc || "（尚未填寫說明）"}</div>
+    ${linkHtml}
     <div class="d-actions">
+      <button type="button" class="btn small" id="btnPrevDetail" ${prevItem ? "" : "disabled"}>◀ 上一筆</button>
+      <button type="button" class="btn small" id="btnNextDetail" ${nextItem ? "" : "disabled"}>下一筆 ▶</button>
       <button type="button" class="btn small" id="btnEditDetail">編輯</button>
       <button type="button" class="btn small danger" id="btnDeleteDetail">刪除</button>
     </div>
   `;
   document.getElementById("btnEditDetail").onclick = () => openTaskForm("edit", shiftId, taskId);
   document.getElementById("btnDeleteDetail").onclick = () => deleteTask(shiftId, taskId);
+  if (prevItem) document.getElementById("btnPrevDetail").onclick = () => showDetail(prevItem.shiftId, prevItem.taskId);
+  if (nextItem) document.getElementById("btnNextDetail").onclick = () => showDetail(nextItem.shiftId, nextItem.taskId);
 }
 
 function resetDetailPanel() {
+  selectedTaskId = null;
   document.getElementById("detailPanel").innerHTML =
     `<div class="ph">點選時間軸中的色塊，即可在此處顯示該項目的時間內說明。</div>`;
 }
+
+
 
 function renderLegend() {
   const legend = document.getElementById("legend");
@@ -707,6 +1086,91 @@ function rerenderAll() {
 }
 
 /* ================================================================
+   避免「編輯中畫面被雲端同步打斷」：
+   只要有任何一個編輯視窗（新增/編輯項目、資料表、匯入、匯出）還開著，
+   收到的雲端更新就先存起來，不馬上套用、不重畫背景畫面；
+   等視窗關閉的那一刻，才把最新資料補套用上去。
+   ================================================================ */
+
+let pendingSnapshotDocs = null;   // 視窗開啟期間收到、還沒套用的最新雲端資料
+let applyDebounceTimer = null;    // 短時間內多次更新，合併成一次重畫，減少畫面閃動
+let lastAppliedSignature = null;  // 上一次實際套用的資料內容指紋，用來判斷這次收到的是不是「其實沒變」
+let hasCheckedDraft = false;      // 只在第一次資料載入完成後檢查一次是否有留下的編輯草稿
+
+function isAnyModalOpen() {
+  return ["taskModal", "tableModal", "importModal", "exportModal"].some(id => {
+    const el = document.getElementById(id);
+    return el && !el.classList.contains("hidden");
+  });
+}
+
+// 把 Firestore 回傳的文件內容做成一個穩定字串，用來比較「這次跟上次是不是完全一樣」。
+// 依 id 排序後再序列化，避免只是 Firestore 回傳順序不同就被誤判成「有變動」。
+function computeSnapshotSignature(docs) {
+  const rows = docs
+    .map(d => ({ id: d.id, data: d.data() }))
+    .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+  return JSON.stringify(rows);
+}
+
+function applySnapshotDocs(docs) {
+  const signature = computeSnapshotSignature(docs);
+  if (signature === lastAppliedSignature) {
+    // 內容跟上次套用的完全一樣（例如自己剛存檔後的回音、或跟畫面無關的雲端小變動），
+    // 不用重畫，避免無意義的畫面刷新
+    document.getElementById("syncStatus").textContent = "✅ 已與 Firebase 同步";
+    return;
+  }
+  lastAppliedSignature = signature;
+
+  shifts = docs.map(d => firestoreDocToShift(d.id, d.data()));
+
+  // 自動修正舊名稱（例如「白班」→「D白班」）並套用正確排序，
+  // 有改到的班別會自動寫回 Firestore，之後就不會再重複觸發。
+  const toMigrate = shifts.filter(s => reconcileShiftNaming(s));
+
+  rerenderAll();
+  document.getElementById("syncStatus").textContent = "✅ 已與 Firebase 同步";
+
+  toMigrate.forEach(s => saveShiftDoc(s));
+
+  if (!hasCheckedDraft) {
+    hasCheckedDraft = true;
+    checkForLeftoverDraft(); // 要等 shifts 有資料之後才能檢查，不然表單裡的班別選單會是空的
+  }
+}
+
+// onSnapshot 收到資料時呼叫這個，而不是直接重畫畫面
+function scheduleApplySnapshotDocs(docs) {
+  if (isAnyModalOpen()) {
+    pendingSnapshotDocs = docs;
+    document.getElementById("syncStatus").textContent = "🔄 雲端有新更新，關閉視窗後套用";
+    return; // 編輯視窗開著時，先不動背景畫面，避免打斷正在輸入的內容
+  }
+  clearTimeout(applyDebounceTimer);
+  applyDebounceTimer = setTimeout(() => {
+    applyDebounceTimer = null;
+    // 排程的這 300ms 之間，使用者可能剛好打開了編輯視窗，這裡要再檢查一次，
+    // 不然視窗開著的時候還是會被這個延遲觸發的重畫打斷
+    if (isAnyModalOpen()) {
+      pendingSnapshotDocs = docs;
+      document.getElementById("syncStatus").textContent = "🔄 雲端有新更新，關閉視窗後套用";
+      return;
+    }
+    applySnapshotDocs(docs);
+  }, 300); // 短時間內的多次更新合併成一次，避免畫面一直閃
+}
+
+// 視窗關閉時呼叫：如果編輯期間累積了還沒套用的雲端更新，這時候補上
+function maybeApplyPendingSnapshot() {
+  if (pendingSnapshotDocs && !isAnyModalOpen()) {
+    const docs = pendingSnapshotDocs;
+    pendingSnapshotDocs = null;
+    applySnapshotDocs(docs);
+  }
+}
+
+/* ================================================================
    新增／編輯／刪除 表單
    ================================================================ */
 
@@ -723,6 +1187,84 @@ function populateShiftSelect(selectedShiftId) {
   };
 }
 
+/* ================================================================
+   編輯中內容的草稿保護：
+   如果頁面在編輯視窗還開著的情況下，被瀏覽器整個重新載入（例如手機切到背景太久
+   被系統砍掉分頁，跟畫面重畫是不同層級的事，JS 沒辦法完全防止），
+   正常的「儲存/取消」流程都不會走到，草稿就會被留在 localStorage 裡，
+   下次打開頁面時偵測到，就能問使用者要不要把打到一半的內容復原。
+   ================================================================ */
+
+const DRAFT_KEY = "timelineTaskDraft";
+let draftSaveTimer = null;
+
+function saveDraftNow() {
+  try {
+    const form = document.getElementById("taskForm");
+    const draft = {
+      mode: form.dataset.editingTaskId ? "edit" : "add",
+      editingShiftId: form.dataset.editingShiftId || "",
+      editingTaskId: form.dataset.editingTaskId || "",
+      fShift: document.getElementById("fShift").value,
+      fNewShiftName: document.getElementById("fNewShiftName").value,
+      fCode: document.getElementById("fCode").value,
+      fName: document.getElementById("fName").value,
+      fStartDay: document.getElementById("fStartDay").value,
+      fStartTime: document.getElementById("fStartTime").value,
+      fEndDay: document.getElementById("fEndDay").value,
+      fEndTime: document.getElementById("fEndTime").value,
+      fDesc: document.getElementById("fDesc").value,
+      fUrl: document.getElementById("fUrl").value,
+      savedAt: Date.now()
+    };
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  } catch (err) {
+    console.error("儲存草稿失敗：", err);
+  }
+}
+
+function scheduleDraftSave() {
+  clearTimeout(draftSaveTimer);
+  draftSaveTimer = setTimeout(saveDraftNow, 400);
+}
+
+function clearDraft() {
+  clearTimeout(draftSaveTimer);
+  try { localStorage.removeItem(DRAFT_KEY); } catch (err) { /* 忽略 */ }
+}
+
+// 頁面剛載入時檢查有沒有留下的草稿；有的話問使用者要不要復原
+function checkForLeftoverDraft() {
+  let raw;
+  try { raw = localStorage.getItem(DRAFT_KEY); } catch (err) { return; }
+  if (!raw) return;
+
+  let draft;
+  try { draft = JSON.parse(raw); } catch (err) { localStorage.removeItem(DRAFT_KEY); return; }
+
+  const minutesAgo = Math.round((Date.now() - (draft.savedAt || 0)) / 60000);
+  const ok = confirm(
+    `偵測到上次有一筆「${draft.fName || "(未命名)"}」的編輯內容沒有正常存檔或關閉` +
+    `（大約 ${minutesAgo} 分鐘前），可能是頁面被瀏覽器中斷了。\n\n要復原這筆內容繼續編輯嗎？`
+  );
+  if (!ok) { clearDraft(); return; }
+
+  openTaskForm(draft.mode, draft.editingShiftId || null, draft.editingTaskId || null);
+  // openTaskForm 會先用目前資料填一次表單，這裡再蓋回草稿當時實際打的內容
+  document.getElementById("fShift").value = draft.fShift || "";
+  document.getElementById("fNewShiftName").value = draft.fNewShiftName || "";
+  document.getElementById("fNewShiftWrap").style.display = draft.fShift === "__new__" ? "flex" : "none";
+  document.getElementById("fCode").value = draft.fCode || "";
+  document.getElementById("fName").value = draft.fName || "";
+  document.getElementById("fStartDay").value = draft.fStartDay || "0";
+  document.getElementById("fStartTime").value = draft.fStartTime || "";
+  document.getElementById("fEndDay").value = draft.fEndDay || "0";
+  document.getElementById("fEndTime").value = draft.fEndTime || "";
+  document.getElementById("fDesc").value = draft.fDesc || "";
+  document.getElementById("fUrl").value = draft.fUrl || "";
+  saveDraftNow();
+}
+
 function openTaskForm(mode, shiftId, taskId) {
   const form = document.getElementById("taskForm");
   form.reset();
@@ -737,6 +1279,7 @@ function openTaskForm(mode, shiftId, taskId) {
     document.getElementById("fCode").value = task.code || "";
     document.getElementById("fName").value = task.name;
     document.getElementById("fDesc").value = task.desc;
+    document.getElementById("fUrl").value = task.url || "";
     document.getElementById("fStartDay").value = String(Math.floor(task.startMin / DAY_MIN));
     document.getElementById("fStartTime").value = minToHHMM(task.startMin % DAY_MIN);
     document.getElementById("fEndDay").value = String(Math.floor(task.endMin / DAY_MIN));
@@ -750,10 +1293,13 @@ function openTaskForm(mode, shiftId, taskId) {
   }
 
   document.getElementById("taskModal").classList.remove("hidden");
+  saveDraftNow(); // 開啟表單那一刻先存一份基準快照，之後每次輸入都會覆蓋更新
 }
 
 function closeTaskModal() {
   document.getElementById("taskModal").classList.add("hidden");
+  clearDraft(); // 正常關閉（存檔或取消）代表這次編輯已經處理完了，草稿可以清掉
+  maybeApplyPendingSnapshot();
 }
 
 function handleFormSubmit(e) {
@@ -782,6 +1328,7 @@ function handleFormSubmit(e) {
   const endDay = Number(document.getElementById("fEndDay").value);
   const endTime = document.getElementById("fEndTime").value;
   const desc = document.getElementById("fDesc").value.trim();
+  const url = document.getElementById("fUrl").value.trim();
 
   if (!/^[0-9]{2}$/.test(code)) { alert("代號請輸入兩位數字，例如 01、02...99"); return; }
   if (!name || !startTime || !endTime) { alert("請完整填寫項目名稱與開始／結束時間"); return; }
@@ -795,15 +1342,20 @@ function handleFormSubmit(e) {
   const editingShiftId = form.dataset.editingShiftId;
   let oldShift = null;
 
+  const normalizedUrl = url && !/^https?:\/\//i.test(url) ? "https://" + url : url;
+
   if (editingTaskId) {
     // 從原本班別移除舊的項目（若編輯時把班別換掉了，也能正確搬移）
     oldShift = shifts.find(s => s.id === editingShiftId);
     if (oldShift) oldShift.tasks = oldShift.tasks.filter(t => t.id !== editingTaskId);
-    shift.tasks.push(new ScheduleTask(editingTaskId, code, name, startMin, endMin, desc));
+    shift.tasks.push(new ScheduleTask(editingTaskId, code, name, startMin, endMin, desc, normalizedUrl));
   } else {
-    shift.tasks.push(new ScheduleTask(nextId("t"), code, name, startMin, endMin, desc));
+    shift.tasks.push(new ScheduleTask(nextId("t"), code, name, startMin, endMin, desc, normalizedUrl));
   }
 
+  // 我們自己剛存了新資料，稍早緩存的雲端更新已經過期了，直接丟掉，
+  // 之後這次寫入會自己觸發新的 onSnapshot 來同步最新狀態
+  pendingSnapshotDocs = null;
   closeTaskModal();
   resetDetailPanel();
   rerenderAll();
@@ -817,6 +1369,7 @@ function deleteTask(shiftId, taskId) {
   if (!confirm("確定要刪除這個項目嗎？")) return;
   const shift = shifts.find(s => s.id === shiftId);
   if (shift) shift.tasks = shift.tasks.filter(t => t.id !== taskId);
+  pendingSnapshotDocs = null; // 同上，剛做的變動比緩存的舊資料新，直接丟棄緩存
   closeTaskModal();
   resetDetailPanel();
   rerenderAll();
@@ -845,7 +1398,7 @@ function buildExportXML() {
     shift.tasks.forEach(task => {
       const sDay = Math.floor(task.startMin / DAY_MIN);
       const eDay = Math.floor(task.endMin / DAY_MIN);
-      lines.push(`    <task name="${escapeXml(task.name)}" code="${escapeXml(task.code || "")}" start="${minToHHMM(task.startMin % DAY_MIN)}" startDay="${sDay}" end="${minToHHMM(task.endMin % DAY_MIN)}" endDay="${eDay}">`);
+      lines.push(`    <task name="${escapeXml(task.name)}" code="${escapeXml(task.code || "")}" url="${escapeXml(task.url || "")}" start="${minToHHMM(task.startMin % DAY_MIN)}" startDay="${sDay}" end="${minToHHMM(task.endMin % DAY_MIN)}" endDay="${eDay}">`);
       lines.push(`      <desc>${escapeXml(task.desc)}</desc>`);
       lines.push(`    </task>`);
     });
@@ -862,6 +1415,7 @@ function openExportModal() {
 
 function closeExportModal() {
   document.getElementById("exportModal").classList.add("hidden");
+  maybeApplyPendingSnapshot();
 }
 
 function copyExport() {
@@ -872,6 +1426,309 @@ function copyExport() {
     navigator.clipboard.writeText(ta.value);
   } catch (e) {
     document.execCommand("copy");
+  }
+}
+
+/* ================================================================
+   資料表檢視／編輯
+   ------------------------------------------------------------
+   把目前所有班別/項目攤平成一張表格（對照附件格式：
+   班別、代號、項目名稱、開始日期時間、結束日期時間、時間內說明），
+   每一列都可以直接編輯或刪除，按「儲存全部」才會真正寫回 Firestore。
+   ================================================================ */
+
+function dayTimeSelectHTML(dayId, timeId, dayVal, timeVal) {
+  return `
+    <div class="dt-time-cell">
+      <select id="${dayId}">
+        <option value="0" ${dayVal === 0 ? "selected" : ""}>當日</option>
+        <option value="1" ${dayVal === 1 ? "selected" : ""}>翌日</option>
+      </select>
+      <input type="time" id="${timeId}" step="600" value="${timeVal}">
+    </div>`;
+}
+
+let tableRowSeq = 0;
+
+// 在表格裡新增一列；prefill 有值代表是既有項目，沒有的話是空白新列
+function addTableRow(prefill) {
+  const seq = ++tableRowSeq;
+  const tbody = document.getElementById("dataTableBody");
+  const tr = document.createElement("tr");
+
+  const shiftName = prefill ? prefill.shiftName : "";
+  const code = prefill ? prefill.code : "";
+  const name = prefill ? prefill.name : "";
+  const startDay = prefill ? Math.floor(prefill.startMin / DAY_MIN) : 0;
+  const startTime = prefill ? minToHHMM(prefill.startMin % DAY_MIN) : "";
+  const endDay = prefill ? Math.floor(prefill.endMin / DAY_MIN) : 0;
+  const endTime = prefill ? minToHHMM(prefill.endMin % DAY_MIN) : "";
+  const desc = prefill ? prefill.desc : "";
+  const url = prefill ? (prefill.url || "") : "";
+
+  tr.dataset.taskId = prefill ? prefill.taskId : "";
+  tr.dataset.origShiftId = prefill ? prefill.shiftId : "";
+
+  tr.innerHTML = `
+    <td><input type="text" class="dt-shift" list="shiftNamesDatalist" value="${shiftName.replace(/"/g, "&quot;")}"></td>
+    <td><input type="text" class="dt-code" maxlength="2" value="${code}"></td>
+    <td class="col-freeze">
+      <div class="dt-name-cell">
+        <input type="text" class="dt-name" value="${name.replace(/"/g, "&quot;")}">
+        <button type="button" class="btn small dt-save-row" title="只儲存這一列">儲存</button>
+      </div>
+    </td>
+    <td>${dayTimeSelectHTML(`dtSDay${seq}`, `dtSTime${seq}`, startDay, startTime)}</td>
+    <td>${dayTimeSelectHTML(`dtEDay${seq}`, `dtETime${seq}`, endDay, endTime)}</td>
+    <td><textarea class="dt-desc" rows="3">${(desc || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</textarea></td>
+    <td><input type="url" class="dt-url" placeholder="https://..." value="${url.replace(/"/g, "&quot;")}"></td>
+    <td><button type="button" class="btn small danger dt-remove-row">刪除</button></td>
+  `;
+  tr.querySelector(".dt-remove-row").addEventListener("click", () => tr.remove());
+  tr.querySelector(".dt-save-row").addEventListener("click", () => saveTableRow(tr));
+  tbody.appendChild(tr);
+}
+
+function openTableModal() {
+  // 每次打開都用「目前的 shifts」重新鋪一次表格
+  document.getElementById("dataTableBody").innerHTML = "";
+  document.getElementById("shiftNamesDatalist").innerHTML =
+    shifts.map(s => `<option value="${s.name}">`).join("");
+
+  shifts.forEach(shift => {
+    const sortedTasks = [...shift.tasks].sort((a, b) =>
+      (a.code || "").localeCompare(b.code || "", undefined, { numeric: true })
+    );
+    sortedTasks.forEach(t => addTableRow({
+      shiftId: shift.id, shiftName: shift.name, taskId: t.id,
+      code: t.code, name: t.name, startMin: t.startMin, endMin: t.endMin, desc: t.desc, url: t.url
+    }));
+  });
+
+  document.getElementById("tableModal").classList.remove("hidden");
+}
+
+function closeTableModal() {
+  document.getElementById("tableModal").classList.add("hidden");
+  maybeApplyPendingSnapshot();
+}
+
+function saveTableModal() {
+  const rows = Array.from(document.querySelectorAll("#dataTableBody tr"));
+  const grouped = new Map(); // 班別名稱 -> task-like 物件陣列
+  const touchedShiftNames = new Set();
+
+  for (const tr of rows) {
+    const shiftName = tr.querySelector(".dt-shift").value.trim();
+    const name = tr.querySelector(".dt-name").value.trim();
+    if (!shiftName && !name) continue; // 完全空白的列直接跳過
+
+    const code = tr.querySelector(".dt-code").value.trim();
+    const sDay = Number(tr.querySelector('[id^="dtSDay"]').value);
+    const sTime = tr.querySelector('[id^="dtSTime"]').value;
+    const eDay = Number(tr.querySelector('[id^="dtEDay"]').value);
+    const eTime = tr.querySelector('[id^="dtETime"]').value;
+    const desc = tr.querySelector(".dt-desc").value.trim();
+    const rowUrlRaw = tr.querySelector(".dt-url").value.trim();
+    const rowUrl = rowUrlRaw && !/^https?:\/\//i.test(rowUrlRaw) ? "https://" + rowUrlRaw : rowUrlRaw;
+
+    if (!shiftName || !name || !sTime || !eTime) {
+      alert("有一列缺少「班別／項目名稱／開始或結束時間」，請補齊後再儲存一次。");
+      return;
+    }
+    if (!/^[0-9]{2}$/.test(code)) {
+      alert(`「${name}」的代號要是兩位數字（例如 01），請修正後再儲存一次。`);
+      return;
+    }
+    const startMin = toAbsoluteMinutes(sTime, sDay);
+    const endMin = toAbsoluteMinutes(eTime, eDay);
+    if (endMin <= startMin) {
+      alert(`「${name}」的結束時間必須晚於開始時間，請修正後再儲存一次。`);
+      return;
+    }
+
+    const taskId = tr.dataset.taskId || nextId("t");
+    if (!grouped.has(shiftName)) grouped.set(shiftName, []);
+    grouped.get(shiftName).push(new ScheduleTask(taskId, code, name, startMin, endMin, desc, rowUrl));
+    touchedShiftNames.add(shiftName);
+  }
+
+  // 表格裡曾經出現、但編輯後整個班別已經沒有任何列的，也要清空該班別的項目
+  const originalShiftIds = new Set(rows.map(tr => tr.dataset.origShiftId).filter(Boolean));
+  originalShiftIds.forEach(id => {
+    const s = shifts.find(x => x.id === id);
+    if (s) touchedShiftNames.add(s.name);
+  });
+
+  const toSave = [];
+  touchedShiftNames.forEach(shiftName => {
+    let shift = shifts.find(s => s.name === shiftName);
+    if (!shift) {
+      const maxOrder = shifts.reduce((m, s) => Math.max(m, s.order ?? 0), -1);
+      const order = SHIFT_ORDER_MAP.hasOwnProperty(shiftName) ? SHIFT_ORDER_MAP[shiftName] : maxOrder + 1;
+      shift = new Shift(nextId("s"), shiftName, pickColorForNewShift(), [], order);
+      shifts.push(shift);
+    }
+    shift.tasks = grouped.get(shiftName) || [];
+    toSave.push(shift);
+  });
+
+  pendingSnapshotDocs = null; // 剛儲存的表格內容比緩存的舊資料新，直接丟棄緩存
+  closeTableModal();
+  rerenderAll();
+  toSave.forEach(s => saveShiftDoc(s));
+}
+
+// 只儲存表格裡「這一列」，不用等按「儲存全部」，也不會動到其他還在編輯中的列
+function saveTableRow(tr) {
+  const shiftName = tr.querySelector(".dt-shift").value.trim();
+  const name = tr.querySelector(".dt-name").value.trim();
+  if (!shiftName && !name) { alert("這一列還是空的，請先填入班別與項目名稱再儲存。"); return; }
+
+  const code = tr.querySelector(".dt-code").value.trim();
+  const sDay = Number(tr.querySelector('[id^="dtSDay"]').value);
+  const sTime = tr.querySelector('[id^="dtSTime"]').value;
+  const eDay = Number(tr.querySelector('[id^="dtEDay"]').value);
+  const eTime = tr.querySelector('[id^="dtETime"]').value;
+  const desc = tr.querySelector(".dt-desc").value.trim();
+  const rowUrlRaw = tr.querySelector(".dt-url").value.trim();
+  const rowUrl = rowUrlRaw && !/^https?:\/\//i.test(rowUrlRaw) ? "https://" + rowUrlRaw : rowUrlRaw;
+
+  if (!shiftName || !name || !sTime || !eTime) {
+    alert("請補齊這一列的「班別／項目名稱／開始或結束時間」再儲存。");
+    return;
+  }
+  if (!/^[0-9]{2}$/.test(code)) {
+    alert(`「${name}」的代號要是兩位數字（例如 01），請修正後再儲存。`);
+    return;
+  }
+  const startMin = toAbsoluteMinutes(sTime, sDay);
+  const endMin = toAbsoluteMinutes(eTime, eDay);
+  if (endMin <= startMin) {
+    alert(`「${name}」的結束時間必須晚於開始時間，請修正後再儲存。`);
+    return;
+  }
+
+  // 找（或新建）這一列所屬的班別
+  let shift = shifts.find(s => s.name === shiftName);
+  if (!shift) {
+    const maxOrder = shifts.reduce((m, s) => Math.max(m, s.order ?? 0), -1);
+    const order = SHIFT_ORDER_MAP.hasOwnProperty(shiftName) ? SHIFT_ORDER_MAP[shiftName] : maxOrder + 1;
+    shift = new Shift(nextId("s"), shiftName, pickColorForNewShift(), [], order);
+    shifts.push(shift);
+  }
+
+  const taskId = tr.dataset.taskId || nextId("t");
+  const newTask = new ScheduleTask(taskId, code, name, startMin, endMin, desc, rowUrl);
+
+  const toSave = [shift];
+  const oldShiftId = tr.dataset.origShiftId;
+  if (oldShiftId && oldShiftId !== shift.id) {
+    // 這一列的班別被改掉了：從原本班別移除，加進新班別
+    const oldShift = shifts.find(s => s.id === oldShiftId);
+    if (oldShift) {
+      oldShift.tasks = oldShift.tasks.filter(t => t.id !== taskId);
+      toSave.push(oldShift);
+    }
+  }
+  const idx = shift.tasks.findIndex(t => t.id === taskId);
+  if (idx >= 0) shift.tasks[idx] = newTask; else shift.tasks.push(newTask);
+
+  // 記住這一列現在對應到哪個班別/項目 id，下次再按儲存才會是「更新」而不是「新增一筆」
+  tr.dataset.taskId = taskId;
+  tr.dataset.origShiftId = shift.id;
+
+  pendingSnapshotDocs = null; // 剛存的比暫存的舊雲端資料新，直接丟棄暫存
+  document.getElementById("shiftNamesDatalist").innerHTML = shifts.map(s => `<option value="${s.name}">`).join("");
+  rerenderAll(); // 背景時間軸立即更新，但表格本身（其他列）不受影響
+  toSave.forEach(s => saveShiftDoc(s));
+
+  tr.classList.add("dt-row-saved");
+  setTimeout(() => tr.classList.remove("dt-row-saved"), 900);
+}
+
+/* ================================================================
+   匯入 XML（同一班別內，相同「項目名稱」會覆蓋原有資料）
+   ================================================================ */
+
+function openImportModal() {
+  document.getElementById("importFile").value = "";
+  document.getElementById("importArea").value = "";
+  document.getElementById("importModal").classList.remove("hidden");
+}
+
+function closeImportModal() {
+  document.getElementById("importModal").classList.add("hidden");
+  maybeApplyPendingSnapshot();
+}
+
+function mergeImportedShifts(importedShifts) {
+  const toSave = [];
+
+  importedShifts.forEach(importedShift => {
+    let shift = shifts.find(s => s.name === importedShift.name);
+    if (!shift) {
+      const maxOrder = shifts.reduce((m, s) => Math.max(m, s.order ?? 0), -1);
+      const order = SHIFT_ORDER_MAP.hasOwnProperty(importedShift.name) ? SHIFT_ORDER_MAP[importedShift.name] : maxOrder + 1;
+      shift = new Shift(nextId("s"), importedShift.name, importedShift.colorKey || pickColorForNewShift(), [], order);
+      shifts.push(shift);
+    }
+
+    importedShift.tasks.forEach(importedTask => {
+      const existing = shift.tasks.find(t => t.name === importedTask.name);
+      if (existing) {
+        // 相同項目名稱：覆蓋內容，但保留原本的 id
+        existing.code = importedTask.code;
+        existing.startMin = importedTask.startMin;
+        existing.endMin = importedTask.endMin;
+        existing.desc = importedTask.desc;
+        existing.url = importedTask.url || "";
+      } else {
+        shift.tasks.push(new ScheduleTask(nextId("t"), importedTask.code, importedTask.name, importedTask.startMin, importedTask.endMin, importedTask.desc, importedTask.url));
+      }
+    });
+
+    toSave.push(shift);
+  });
+
+  return toSave;
+}
+
+function runImport(xmlText) {
+  let importedShifts;
+  try {
+    importedShifts = parseSchedule(xmlText);
+    if (!importedShifts.length) throw new Error("empty");
+  } catch (err) {
+    alert("這份 XML 讀不出有效的班別/項目資料，請確認格式是否正確。");
+    return;
+  }
+
+  const shiftCount = importedShifts.length;
+  const taskCount = importedShifts.reduce((n, s) => n + s.tasks.length, 0);
+  const toSave = mergeImportedShifts(importedShifts);
+
+  pendingSnapshotDocs = null; // 剛匯入的內容比緩存的舊資料新，直接丟棄緩存
+  closeImportModal();
+  rerenderAll();
+  toSave.forEach(s => saveShiftDoc(s));
+
+  alert(`匯入完成：處理了 ${shiftCount} 個班別、共 ${taskCount} 個項目（相同項目名稱已覆蓋）。`);
+}
+
+function doImport() {
+  const fileInput = document.getElementById("importFile");
+  const textArea = document.getElementById("importArea");
+
+  if (fileInput.files && fileInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = () => runImport(reader.result);
+    reader.onerror = () => alert("讀取檔案失敗，請改用貼上 XML 內容的方式。");
+    reader.readAsText(fileInput.files[0], "utf-8");
+  } else if (textArea.value.trim()) {
+    runImport(textArea.value);
+  } else {
+    alert("請選擇 XML 檔案，或貼上 XML 內容。");
   }
 }
 
@@ -891,6 +1748,7 @@ function setupEvents() {
 
   document.getElementById("btnAddTask").addEventListener("click", () => openTaskForm("add", null, null));
   document.getElementById("taskForm").addEventListener("submit", handleFormSubmit);
+  document.getElementById("taskForm").addEventListener("input", scheduleDraftSave);
   document.getElementById("btnCancelForm").addEventListener("click", closeTaskModal);
   document.getElementById("btnDeleteInForm").addEventListener("click", () => {
     const form = document.getElementById("taskForm");
@@ -907,6 +1765,30 @@ function setupEvents() {
   document.getElementById("btnCopyExport").addEventListener("click", copyExport);
   document.getElementById("exportModal").addEventListener("click", e => {
     if (e.target.id === "exportModal") closeExportModal();
+  });
+
+  document.getElementById("btnTableView").addEventListener("click", openTableModal);
+  document.getElementById("btnCloseTable").addEventListener("click", closeTableModal);
+  document.getElementById("btnAddTableRow").addEventListener("click", () => addTableRow(null));
+  document.getElementById("btnSaveTable").addEventListener("click", saveTableModal);
+  document.getElementById("tableModal").addEventListener("click", e => {
+    if (e.target.id === "tableModal") closeTableModal();
+  });
+
+  document.getElementById("btnImport").addEventListener("click", openImportModal);
+  document.getElementById("btnCloseImport").addEventListener("click", closeImportModal);
+  document.getElementById("btnDoImport").addEventListener("click", doImport);
+  document.getElementById("importModal").addEventListener("click", e => {
+    if (e.target.id === "importModal") closeImportModal();
+  });
+
+  // 編輯視窗還開著的時候，如果不小心要離開/整理頁面，先跳出瀏覽器內建的確認提示
+  // （注意：這只擋得住「使用者主動離開」的情況，手機系統直接砍背景分頁時不會經過這裡）
+  window.addEventListener("beforeunload", e => {
+    if (isAnyModalOpen()) {
+      e.preventDefault();
+      e.returnValue = "";
+    }
   });
 }
 
@@ -934,16 +1816,7 @@ function setupEvents() {
   // 即時監聽：只要 Firestore 的 shifts collection 有變動（不論是這一頁自己改的，
   // 還是別人在別的裝置/分頁改的），這裡都會收到通知並自動重畫畫面
   onSnapshot(shiftsCol, snapshot => {
-    shifts = snapshot.docs.map(d => firestoreDocToShift(d.id, d.data()));
-
-    // 自動修正舊名稱（例如「白班」→「D白班」）並套用正確排序，
-    // 有改到的班別會自動寫回 Firestore，之後就不會再重複觸發。
-    const toMigrate = shifts.filter(s => reconcileShiftNaming(s));
-
-    rerenderAll();
-    document.getElementById("syncStatus").textContent = "✅ 已與 Firebase 同步";
-
-    toMigrate.forEach(s => saveShiftDoc(s));
+    scheduleApplySnapshotDocs(snapshot.docs);
   }, err => {
     console.error(err);
     document.getElementById("syncStatus").textContent = "⚠️ 與 Firebase 同步中斷：" + err.message;
