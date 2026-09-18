@@ -478,7 +478,7 @@ A組巡視各病房，查看是否異常(發現聲音、味道、是否有飄煙
   .lane-label.moss .shift-name::before{background:var(--moss);}
   .lane-label .lane-head-btns{display:flex;gap:2px;flex:none;}
   .lane-label .add-task-btn, .lane-label .edit-shift-desc-btn{border:none;background:none;color:var(--ink-soft);cursor:pointer;
-    font-size:14px;line-height:1;padding:0 4px;}
+    font-size:28px;line-height:1;padding:0 6px;}
   .lane-label .add-task-btn:hover, .lane-label .edit-shift-desc-btn:hover{color:var(--ink);}
   .lane-label .shift-func-desc{font-size:11px;color:var(--ink-soft);font-style:italic;
     padding-left:16px;line-height:1.4;word-break:break-word;}
@@ -1504,10 +1504,15 @@ function deleteShift(shiftId) {
   const shift = shifts.find(s => s.id === shiftId);
   if (!shift) return;
   const taskCount = shift.tasks.length;
-  const msg = taskCount > 0
-    ? `確定要刪除班別「${shift.name}」嗎？裡面的 ${taskCount} 個項目也會一併刪除，無法復原。`
-    : `確定要刪除班別「${shift.name}」嗎？`;
-  if (!confirm(msg)) return;
+
+  // 班別內只要還有任何一筆項目（項目名稱與時間軸內容），就一律禁止刪除，
+  // 沒有例外、不能用確認視窗略過；必須先把裡面的項目都刪光才能刪這個班別。
+  if (taskCount > 0) {
+    alert(`無法刪除班別「${shift.name}」：裡面還有 ${taskCount} 個項目。\n請先把這個班別內的所有項目都刪除後，才能刪除班別本身。`);
+    return;
+  }
+
+  if (!confirm(`確定要刪除班別「${shift.name}」嗎？`)) return;
 
   shifts = shifts.filter(s => s.id !== shiftId);
   pendingSnapshotDocs = null;
