@@ -468,7 +468,8 @@ A組巡視各病房，查看是否異常(發現聲音、味道、是否有飄煙
   /* ---------- 班別／項目列 ---------- */
   .lane-label{padding:14px 14px;display:flex;flex-direction:column;gap:4px;}
   .lane-label .lane-head{display:flex;align-items:center;justify-content:space-between;}
-  .lane-label .shift-name{font-weight:700;font-size:14px;}
+  .lane-label .shift-name{font-weight:700;font-size:14px;cursor:pointer;}
+  .lane-label .shift-name:hover{text-decoration:underline;}
   .lane-label .shift-name::before{content:"";display:inline-block;width:9px;height:9px;
     border-radius:50%;margin-right:7px;vertical-align:middle;}
   .lane-label.amber .shift-name::before{background:var(--amber);}
@@ -1357,7 +1358,7 @@ function renderLanes() {
     );
     label.innerHTML = `
       <div class="lane-head">
-        <span class="shift-name">${shift.name}</span>
+        <span class="shift-name" data-shift-id="${shift.id}" title="點選查看「${shift.name}」完整說明（開新視窗，可左右拖曳瀏覽）">${shift.name}</span>
         <span class="lane-head-btns">
           <button type="button" class="edit-shift-desc-btn" title="編輯「${shift.name}」（名稱／功能說明）" data-shift-id="${shift.id}">✎</button>
           <button type="button" class="add-task-btn" title="在「${shift.name}」新增項目" data-shift-id="${shift.id}">＋</button>
@@ -1484,6 +1485,90 @@ function buildDescRow(shift) {
 
   row.appendChild(track);
   return row;
+}
+
+// 點選班別名稱時，開一個新視窗把該班別所有項目的說明用「大字、可左右拖曳瀏覽」的
+// 橫向卡片畫面顯示出來，方便手機或投影時直接看文字內容，不用瞇眼看小框框。
+function openShiftDescPage(shiftId) {
+  const shift = shifts.find(s => s.id === shiftId);
+  if (!shift) return;
+
+  const sortedTasks = [...shift.tasks].sort((a, b) => a.startMin - b.startMin);
+
+  const cardsHtml = sortedTasks.map(task => `
+    <div class="card">
+      <div class="card-head">
+        <span class="card-code">${escapeHtml(task.code || "--")}</span>
+        <span class="card-name">${escapeHtml(task.name)}</span>
+      </div>
+      <div class="card-time">${minutesToLabel(task.startMin)} －－ ${minutesToLabel(task.endMin)}</div>
+      <div class="card-text">${task.desc ? escapeHtml(task.desc) : "（尚未填寫說明）"}</div>
+    </div>`).join("");
+
+  const html = `<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${escapeHtml(shift.name)}－完整說明</title>
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;background:#F6F1E7;color:#2b2620;}
+  header{padding:18px 26px;background:#fff;border-bottom:1px solid #E4DCC9;position:sticky;top:0;z-index:5;
+    display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;}
+  header h1{font-size:24px;margin:0;}
+  header .func-desc{font-size:14px;color:#7a7263;}
+  header .hint{margin-left:auto;font-size:12px;color:#9a917e;white-space:nowrap;}
+  .scroller{display:flex;gap:22px;padding:28px;overflow-x:auto;overflow-y:hidden;cursor:grab;}
+  .scroller.dragging{cursor:grabbing;user-select:none;}
+  .scroller::-webkit-scrollbar{height:16px;}
+  .scroller::-webkit-scrollbar-track{background:#E9E2D2;border-radius:8px;}
+  .scroller::-webkit-scrollbar-thumb{background:#B7AE9A;border-radius:8px;}
+  .scroller::-webkit-scrollbar-thumb:hover{background:#9c927d;}
+  .card{flex:0 0 420px;background:#fff;border:1px solid #E4DCC9;border-radius:8px;
+    padding:22px 26px;box-shadow:0 2px 6px rgba(0,0,0,.06);}
+  .card-head{display:flex;align-items:baseline;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+  .card-code{font-size:14px;font-weight:700;background:#F0E9D8;color:#5c5341;
+    padding:2px 10px;border-radius:12px;white-space:nowrap;}
+  .card-name{font-size:21px;font-weight:700;word-break:break-word;}
+  .card-time{font-size:15px;color:#7a7263;margin-bottom:14px;}
+  .card-text{font-size:17px;line-height:1.8;white-space:pre-wrap;word-break:break-word;}
+  footer{padding:14px 26px;font-size:12px;color:#9a917e;}
+</style>
+</head>
+<body>
+<header>
+  <h1>${escapeHtml(shift.name)}</h1>
+  ${shift.description ? `<span class="func-desc">${escapeHtml(shift.description)}</span>` : ""}
+  <span class="hint">← 左右拖曳／滑動瀏覽所有項目說明 →</span>
+</header>
+<div class="scroller" id="scroller">
+  ${cardsHtml || `<div class="card" style="color:#9a917e;">目前這個班別還沒有任何項目。</div>`}
+</div>
+<footer>共 ${sortedTasks.length} 筆項目・關閉此視窗即可回到原本的時間軸畫面</footer>
+<script>
+  (function(){
+    var el = document.getElementById("scroller");
+    var isDown = false, startX = 0, startScroll = 0;
+    el.addEventListener("mousedown", function(e){
+      isDown = true; el.classList.add("dragging");
+      startX = e.pageX; startScroll = el.scrollLeft;
+    });
+    window.addEventListener("mouseup", function(){ isDown = false; el.classList.remove("dragging"); });
+    window.addEventListener("mousemove", function(e){
+      if (!isDown) return;
+      el.scrollLeft = startScroll - (e.pageX - startX);
+    });
+  })();
+</script>
+</body>
+</html>`;
+
+  const win = window.open("", "_blank");
+  if (!win) { alert("瀏覽器擋下了彈出視窗，請允許彈出視窗後再試一次。"); return; }
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
 }
 
 // 記住目前選取（顯示在下方說明框）的項目 id，重畫時才能重新標記選取狀態
@@ -2399,6 +2484,8 @@ function setupEvents() {
     if (nameItem) { showDetail(nameItem.dataset.shiftId, nameItem.dataset.taskId); return; }
     const descBox = e.target.closest(".desc-box");
     if (descBox) { showDetail(descBox.dataset.shiftId, descBox.dataset.taskId); return; }
+    const shiftNameEl = e.target.closest(".shift-name");
+    if (shiftNameEl) { openShiftDescPage(shiftNameEl.dataset.shiftId); return; }
   });
 
   document.getElementById("btnAddTask").addEventListener("click", () => openTaskForm("add", null, null));
