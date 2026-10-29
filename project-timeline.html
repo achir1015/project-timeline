@@ -504,6 +504,33 @@ A組巡視各病房，查看是否異常(發現聲音、味道、是否有飄煙
   .now-line .now-tag{position:absolute;top:2px;left:4px;font-size:10px;color:#b23b3b;
     white-space:nowrap;background:rgba(255,255,255,.85);padding:0 2px;}
 
+  /* ---------- 班別說明列：橫向展開每個項目的說明卡片，單數/偶數項目分兩列交錯擺放，
+     各自用箭頭指回時間軸上對應的色塊；整列跟著 #gridScroll 一起左右捲動，
+     不需要另外處理同步捲動。 ---------- */
+  .desc-row .label-cell{display:flex;align-items:flex-start;justify-content:center;
+    padding-top:18px;font-size:12px;color:var(--ink-soft);}
+  .desc-row .track-cell{border-bottom:1px solid var(--line);background:var(--paper-alt);}
+  .desc-arrow-layer{position:absolute;top:0;left:0;pointer-events:none;overflow:visible;}
+  .desc-arrow{stroke:#3b5bc9;stroke-width:2.5;}
+  .desc-arrow-head{fill:#3b5bc9;}
+  .desc-box{position:absolute;background:#fff;border:1px solid var(--line);border-radius:4px;
+    box-shadow:0 1px 3px rgba(0,0,0,.12);padding:7px 10px;overflow-y:auto;cursor:pointer;
+    transition:box-shadow .15s ease;}
+  .desc-box:hover{box-shadow:0 0 0 2px #3b5bc9 inset;}
+  .desc-box.selected{box-shadow:0 0 0 2px var(--ink) inset;border-color:var(--ink);}
+  .desc-box-head{display:flex;align-items:baseline;gap:6px;margin-bottom:3px;}
+  .desc-box .desc-code{font-size:11px;font-weight:700;padding:1px 6px;border-radius:10px;
+    white-space:nowrap;background:var(--paper-alt);}
+  .desc-box.amber .desc-code{background:var(--amber-bg);color:#5c3f14;}
+  .desc-box.teal .desc-code{background:var(--teal-bg);color:#173e37;}
+  .desc-box.indigo .desc-code{background:var(--indigo-bg);color:#1f2846;}
+  .desc-box.rose .desc-code{background:var(--rose-bg);color:#5c2229;}
+  .desc-box.moss .desc-code{background:var(--moss-bg);color:#2e3f1a;}
+  .desc-box .desc-name{font-size:12px;font-weight:700;word-break:break-word;}
+  .desc-box .desc-time{font-size:10.5px;color:var(--ink-soft);margin-bottom:4px;}
+  .desc-box .desc-text{font-size:11.5px;line-height:1.5;color:var(--ink);
+    white-space:pre-wrap;word-break:break-word;}
+
   /* ---------- 說明面板 / 圖例 ---------- */
   footer.legend{margin-top:16px;font-size:12px;color:var(--ink-soft);display:flex;gap:18px;flex-wrap:wrap;}
   footer.legend span{display:inline-flex;align-items:center;gap:6px;}
@@ -1361,6 +1388,10 @@ function renderLanes() {
 
     row.appendChild(track);
     lanesEl.appendChild(row);
+
+    // 每個班別色塊列下方，再加一列「橫向展開的說明卡片」：單數/偶數項目分兩列交錯擺放，
+    // 用箭頭指回上方對應的色塊，避免相鄰項目的說明卡片互相重疊。
+    lanesEl.appendChild(buildDescRow(shift));
   });
 
   renderNowLine();
@@ -1368,6 +1399,91 @@ function renderLanes() {
   // 重畫是整個 innerHTML 重建，捲動位置要手動還原，不然畫面會跳回頂端/最左邊
   gridScroll.scrollTop = prevScrollTop;
   gridScroll.scrollLeft = prevScrollLeft;
+}
+
+// ---- 班別說明列：橫向展開每個項目的說明卡片 ----
+const DESC_ROW_H = 112;   // 每一列說明卡片的固定高度（超過高度的說明文字，框內可以上下捲動）
+const DESC_ROW_GAP = 14;  // 兩列說明卡片之間的垂直間距
+const DESC_TOP_PAD = 18;  // 色塊底部到第一列說明卡片之間，留給箭頭的空間
+const DESC_BOX_W = 230;   // 每個說明卡片的固定寬度
+const DESC_BOX_GAP = 10;  // 同一列中，相鄰說明卡片之間至少要留的間距
+
+function buildDescRow(shift) {
+  const row = document.createElement("div");
+  row.className = "row desc-row";
+
+  const label = document.createElement("div");
+  label.className = "label-cell";
+  label.textContent = "說明";
+  row.appendChild(label);
+
+  const track = document.createElement("div");
+  track.className = "track-cell desc-track";
+  track.style.width = TOTAL_PX + "px";
+
+  // 依開始時間排序，才能讓說明卡片由左到右跟時間軸上的色塊順序一致
+  const sortedTasks = [...shift.tasks].sort((a, b) => a.startMin - b.startMin);
+
+  if (sortedTasks.length === 0) {
+    track.style.height = "0px";
+    row.appendChild(track);
+    return row;
+  }
+
+  const totalHeight = DESC_TOP_PAD + DESC_ROW_H * 2 + DESC_ROW_GAP;
+  track.style.height = totalHeight + "px";
+
+  // 分別記住兩列中，各自上一張卡片的右邊緣，避免同一列相鄰的卡片互相重疊
+  const lastRight = [-Infinity, -Infinity];
+  const boxesHtml = [];
+  const arrowsHtml = [];
+  const markerId = `descArrow_${shift.id}`;
+
+  sortedTasks.forEach((task, idx) => {
+    const rowIdx = idx % 2; // 0＝第一列（第1,3,5...筆）／1＝第二列（第2,4,6...筆），單數偶數交錯擺放
+    const barLeft = px(task.startMin);
+    const barWidth = Math.max(pxLen(task.endMin - task.startMin), 22);
+    const barCenterX = barLeft + barWidth / 2;
+
+    let boxLeft = Math.max(barLeft - 20, 4);
+    if (boxLeft < lastRight[rowIdx] + DESC_BOX_GAP) boxLeft = lastRight[rowIdx] + DESC_BOX_GAP;
+    lastRight[rowIdx] = boxLeft + DESC_BOX_W;
+
+    const boxTop = DESC_TOP_PAD + rowIdx * (DESC_ROW_H + DESC_ROW_GAP);
+    const timeLabel = `${minutesToLabel(task.startMin)} －－ ${minutesToLabel(task.endMin)}`;
+    const selectedCls = task.id === selectedTaskId ? " selected" : "";
+
+    boxesHtml.push(`
+      <div class="desc-box ${shift.colorKey}${selectedCls}"
+           style="left:${boxLeft}px; top:${boxTop}px; width:${DESC_BOX_W}px; height:${DESC_ROW_H}px;"
+           data-shift-id="${shift.id}" data-task-id="${task.id}">
+        <div class="desc-box-head">
+          <span class="desc-code">${escapeHtml(task.code || "--")}</span>
+          <span class="desc-name">${escapeHtml(task.name)}</span>
+        </div>
+        <div class="desc-time">${timeLabel}</div>
+        ${task.desc ? `<div class="desc-text">${escapeHtml(task.desc)}</div>` : ""}
+      </div>`);
+
+    arrowsHtml.push(
+      `<line x1="${barCenterX}" y1="0" x2="${boxLeft + 14}" y2="${boxTop}" class="desc-arrow" marker-end="url(#${markerId})" />`
+    );
+  });
+
+  track.innerHTML = `
+    <svg class="desc-arrow-layer" width="${TOTAL_PX}" height="${totalHeight}">
+      <defs>
+        <marker id="${markerId}" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" class="desc-arrow-head" />
+        </marker>
+      </defs>
+      ${arrowsHtml.join("")}
+    </svg>
+    ${boxesHtml.join("")}
+  `;
+
+  row.appendChild(track);
+  return row;
 }
 
 // 記住目前選取（顯示在下方說明框）的項目 id，重畫時才能重新標記選取狀態
@@ -1392,12 +1508,14 @@ function showDetail(shiftId, taskId) {
   if (!shift || !task) return;
 
   selectedTaskId = taskId;
-  document.querySelectorAll(".bar.selected").forEach(b => b.classList.remove("selected"));
+  document.querySelectorAll(".bar.selected, .desc-box.selected").forEach(b => b.classList.remove("selected"));
   const barEl = document.querySelector(`.bar[data-task-id="${taskId}"]`);
   if (barEl) {
     barEl.classList.add("selected");
     barEl.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
   }
+  const descBoxEl = document.querySelector(`.desc-box[data-task-id="${taskId}"]`);
+  if (descBoxEl) descBoxEl.classList.add("selected"); // 點選班別說明卡片後，也同步在卡片上標示已選取
 
   // 上一筆／下一筆：純粹只是換成顯示序列中前後那一筆的資料，編輯功能本身不會因此改變
   const seq = getFlatTaskSequence();
@@ -2279,6 +2397,8 @@ function setupEvents() {
     if (descBtn) { openShiftForm("edit", descBtn.dataset.shiftId); return; }
     const nameItem = e.target.closest(".task-name");
     if (nameItem) { showDetail(nameItem.dataset.shiftId, nameItem.dataset.taskId); return; }
+    const descBox = e.target.closest(".desc-box");
+    if (descBox) { showDetail(descBox.dataset.shiftId, descBox.dataset.taskId); return; }
   });
 
   document.getElementById("btnAddTask").addEventListener("click", () => openTaskForm("add", null, null));
